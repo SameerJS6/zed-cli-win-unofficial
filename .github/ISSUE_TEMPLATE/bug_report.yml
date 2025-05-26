@@ -1,0 +1,19 @@
+name: Bug Report
+description: Report an issue with the project.
+title: "🐞bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thanks for taking time to fill out this bug report!
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug Description
+      description: Provide a clear and consice description of the bug. If you plan to submit a PR for this issue, mention it here.
+      placeholder: Describe the bug in detail...
+    validations:
+      required: true
