@@ -116,18 +116,67 @@ func AssociateExtensionWithProgID(ext string, progID string) error {
 }
 
 // DeleteKeyRecursivly deletes a registry key and all its subkey
-func DeleteKeyRecursivly(baseKey registry.Key, path string) {
-	registry.DeleteKey(baseKey, path)
-}
-
-// DeleteValueQuietly deletes a registry value without throwing errors
-func DeleteValueSilently(baseKey registry.Key, keyPath string, valueName string) {
-	key, err := registry.OpenKey(baseKey, keyPath, registry.WRITE)
+func DeleteKeyRecursively(baseKey registry.Key, path string) {
+	// Step 1: Open the Key
+	key, err := registry.OpenKey(baseKey, path,
+		registry.ENUMERATE_SUB_KEYS|registry.QUERY_VALUE)
 
 	if err != nil {
+		if err == registry.ErrNotExist {
+			fmt.Printf("Key not found for recursive deletion (already removed or never existed): %s\n", path)
+		} else {
+			fmt.Printf("Failed to open key %s for reading subkeys: %v\n", path, err)
+		}
+
+		errDelete := registry.DeleteKey(baseKey, path)
+		if errDelete != nil && errDelete != registry.ErrNotExist {
+			fmt.Printf("⚠️ Failed to delete key %s (after failing to open for subkey enumeration): %v\n", path, errDelete)
+		} else if errDelete == nil {
+			fmt.Printf("✅  Successfully deleted key: %s\n", path)
+		}
 		return
 	}
 
 	defer key.Close()
+
+	subKeyNames, err := key.ReadSubKeyNames(0)
+	if err != nil {
+		fmt.Printf("Failed to read subkey names for %s: %v\n", path, err)
+	}
+
+	for _, subKeyName := range subKeyNames {
+		fullSubKeyPath := filepath.Join(path, subKeyName)
+		DeleteKeyRecursively(baseKey, fullSubKeyPath)
+	}
+
+	key.Close()
+	deleteErr := registry.DeleteKey(baseKey, path)
+
+	if deleteErr != nil {
+		if deleteErr == registry.ErrNotExist {
+			fmt.Printf("ℹ️ Key not found for final deletion (already removed): %s\n", path)
+		} else {
+			fmt.Printf("⚠️ Failed to delete key %s (after attempting subkey deletion): %v\n", path, err)
+		}
+	} else {
+		fmt.Printf("✅ Successfully deleted key: %s", path)
+	}
+}
+
+// DeleteValueSilently deletes a registry value without throwing errors
+func DeleteValueSilently(baseKey registry.Key, keyPath string, valueName string) {
+	key, err := registry.OpenKey(baseKey, keyPath, registry.WRITE)
+
+	if err != nil {
+		if err == registry.ErrNotExist {
+			fmt.Printf("ℹ️ Key not found for value deletion: %s\n", keyPath)
+		} else {
+			fmt.Printf("Failed to open key %s to deelte value '%s': %v", keyPath, valueName, err)
+		}
+		return
+	}
+
+	defer key.Close()
+
 	key.DeleteValue(valueName)
 }
