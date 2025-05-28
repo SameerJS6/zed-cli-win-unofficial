@@ -29,6 +29,7 @@ func Execute(ctx context.Context) error {
 		},
 		Commands: []*cli.Command{
 			configCommand(),
+			contextCommand(),
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			if cmd.Bool("version") {
