@@ -31,7 +31,7 @@ func InstallGenericContextMenu(config *RegistryConfig) error {
 
 // createContextMenuEntry creates a context menu entry for a given file type
 func createContextMenuEntry(fileType string, config *RegistryConfig) error {
-	shellKeyPath := filepath.Join("Software", "Classes", fileType, "shell", config.AppName)
+	shellKeyPath := filepath.Join("Software", "Classes", fileType, "shell", config.AppName+"ByUnofficialZedCLI")
 
 	// Create the shell key
 	shellKey, _, err := ensureKey(registry.CURRENT_USER, shellKeyPath, registry.WRITE)
@@ -67,7 +67,7 @@ func createContextMenuEntry(fileType string, config *RegistryConfig) error {
 
 // createDirectoryBackgroundContextMenu creates context menu for directory background
 func createDirectoryBackgroundContextMenu(config *RegistryConfig) error {
-	shellKeyPath := filepath.Join("Software", "Classes", "Directory", "Background", "shell", config.AppName)
+	shellKeyPath := filepath.Join("Software", "Classes", "Directory", "Background", "shell", config.AppName+"ByUnofficialZedCLI")
 
 	// Create the shell key
 	shellKey, _, err := ensureKey(registry.CURRENT_USER, shellKeyPath, registry.WRITE)
@@ -105,20 +105,20 @@ func createDirectoryBackgroundContextMenu(config *RegistryConfig) error {
 // UninstallAllContextMenus removes all Zed context menu entries
 func UninstallAllContextMenus(config *RegistryConfig) error {
 	// Remove all file types context menu
-	DeleteKeyRecursively(registry.CURRENT_USER, filepath.Join("Software", "Classes", "*", "shell", config.AppName))
+	DeleteKeyRecursively(registry.CURRENT_USER, filepath.Join("Software", "Classes", "*", "shell", config.AppName+"ByUnofficialZedCLI"))
 
 	// Remove directory context menu
-	DeleteKeyRecursively(registry.CURRENT_USER, filepath.Join("Software", "Classes", "Directory", "shell", config.AppName))
+	DeleteKeyRecursively(registry.CURRENT_USER, filepath.Join("Software", "Classes", "Directory", "shell", config.AppName+"ByUnofficialZedCLI"))
 
 	// Remove directory background context menu
-	DeleteKeyRecursively(registry.CURRENT_USER, filepath.Join("Software", "Classes", "Directory", "Background", "shell", config.AppName))
+	DeleteKeyRecursively(registry.CURRENT_USER, filepath.Join("Software", "Classes", "Directory", "Background", "shell", config.AppName+"ByUnofficialZedCLI"))
 
 	// Remove ProgIDs for each file extension
 	for _, ext := range config.FileExtensions {
 		if !strings.HasPrefix(ext, ".") {
 			continue
 		}
-		progID := fmt.Sprintf("%s%s", config.AppName, ext)
+		progID := fmt.Sprintf("%s%s", config.AppName+"ByUnofficialZedCLI", ext)
 		DeleteKeyRecursively(registry.CURRENT_USER, filepath.Join("Software", "Classes", progID))
 		DeleteValueSilently(registry.CURRENT_USER, filepath.Join("Software", "Classes", ext), "")
 	}

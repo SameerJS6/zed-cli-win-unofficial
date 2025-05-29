@@ -34,7 +34,7 @@ func setStringValue(key registry.Key, name string, value string) error {
 // CreateProgID creates a ProgID registry entry for a file extension
 func CreateProgID(registryConfig *RegistryConfig, ext string) error {
 	// 1. Create root level ProgID (for eg: Zed.json)
-	progID := fmt.Sprintf("%s%s", registryConfig.AppName, ext)
+	progID := fmt.Sprintf("%s%s", registryConfig.AppName+"ByUnofficialZedCLI", ext)
 	progPath := filepath.Join("Software", "Classes", progID)
 
 	key, _, err := ensureKey(registry.CURRENT_USER, progPath, registry.WRITE)
