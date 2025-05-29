@@ -60,6 +60,12 @@ func contextCommand() *cli.Command {
 						}
 					}
 
+					cfg.ContextMenuEnabled = true
+					if err := config.SaveConfig(cfg); err != nil {
+						fmt.Printf("❌ Error saving config: %v\n", err)
+						return nil
+					}
+
 					fmt.Println("--------------------------------------------------------------------")
 					fmt.Println("✅ Zed context menu and file association setup complete for current user.")
 					fmt.Println("You might need to restart Windows Explorer or log out/in for all changes to take full effect.")
@@ -73,12 +79,30 @@ func contextCommand() *cli.Command {
 				Name:  "uninstall",
 				Usage: "Uninstall the 'Open with Zed' context menu option",
 				Action: func(ctx context.Context, cmd *cli.Command) error {
+					cfg, err := config.LoadConfig()
+
+					if err != nil {
+						fmt.Printf("❌ Error loading config: %v\n", err)
+						return nil
+					}
+
+					if !cfg.ContextMenuEnabled {
+						fmt.Println("Zed context menu is not installed. Nothing to uninstall.")
+						return nil
+					}
+
 					registryConfig := registry.NewConfig("", fileext.SupportedExtensions())
 
 					fmt.Println("Removing Zed context menu and file associations...")
 
 					if err := registry.UninstallAllContextMenus(registryConfig); err != nil {
 						fmt.Printf("❌ Error during uninstall: %v\n", err)
+						return nil
+					}
+
+					cfg.ContextMenuEnabled = false
+					if err := config.SaveConfig(cfg); err != nil {
+						fmt.Printf("❌ Error saving config: %v\n", err)
 						return nil
 					}
 
