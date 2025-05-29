@@ -13,17 +13,17 @@ import (
 func InstallGenericContextMenu(config *RegistryConfig) error {
 	// 1. All files context menu (*/shell/Zed)
 	if err := createContextMenuEntry("*", config); err != nil {
-		return fmt.Errorf("failed to create context menu for all files: %w", err)
+		return fmt.Errorf("failed to install context menu for files: %w", err)
 	}
 
 	// 2. Directory context menu (Directory/shell/Zed)
 	if err := createContextMenuEntry("Directory", config); err != nil {
-		return fmt.Errorf("failed to create context menu for directories: %w", err)
+		return fmt.Errorf("failed to install context menu for folders: %w", err)
 	}
 
 	// 3. Directory background context menu (Directory/Background/shell/Zed)
 	if err := createDirectoryBackgroundContextMenu(config); err != nil {
-		return fmt.Errorf("failed to create directory background context menu: %w", err)
+		return fmt.Errorf("failed to install folder background context menu: %w", err)
 	}
 
 	return nil
@@ -36,12 +36,12 @@ func createContextMenuEntry(fileType string, config *RegistryConfig) error {
 	// Create the shell key
 	shellKey, _, err := ensureKey(registry.CURRENT_USER, shellKeyPath, registry.WRITE)
 	if err != nil {
-		return fmt.Errorf("shell key for %s: %w", fileType, err)
+		return fmt.Errorf("failed to set up context menu entry: %w", err)
 	}
 	defer shellKey.Close()
 
 	if err := setStringValue(shellKey, "", config.GenericMenuText); err != nil {
-		return fmt.Errorf("shell key text for %s: %w", fileType, err)
+		return fmt.Errorf("failed to set context menu text: %w", err)
 	}
 
 	iconPath := fmt.Sprintf(`"%s"`, config.ExecutablePath)
@@ -53,13 +53,13 @@ func createContextMenuEntry(fileType string, config *RegistryConfig) error {
 	commandKeyPath := filepath.Join(shellKeyPath, "command")
 	commandKey, _, err := ensureKey(registry.CURRENT_USER, commandKeyPath, registry.WRITE)
 	if err != nil {
-		return fmt.Errorf("command key for %s: %w", fileType, err)
+		return fmt.Errorf("failed to configure context menu action: %w", err)
 	}
 	defer commandKey.Close()
 
 	commandValue := fmt.Sprintf(`"%s" "%%1"`, config.ExecutablePath)
 	if err := setStringValue(commandKey, "", commandValue); err != nil {
-		return fmt.Errorf("command value for %s: %w", fileType, err)
+		return fmt.Errorf("failed to configure context menu action: %w", err)
 	}
 
 	return nil
@@ -72,12 +72,12 @@ func createDirectoryBackgroundContextMenu(config *RegistryConfig) error {
 	// Create the shell key
 	shellKey, _, err := ensureKey(registry.CURRENT_USER, shellKeyPath, registry.WRITE)
 	if err != nil {
-		return fmt.Errorf("directory background shell key: %w", err)
+		return fmt.Errorf("failed to set up folder background context menu: %w", err)
 	}
 	defer shellKey.Close()
 
 	if err := setStringValue(shellKey, "", config.GenericMenuText); err != nil {
-		return fmt.Errorf("directory background shell key text: %w", err)
+		return fmt.Errorf("failed to set folder background context menu text: %w", err)
 	}
 
 	iconPath := fmt.Sprintf(`"%s"`, config.ExecutablePath)
@@ -89,14 +89,14 @@ func createDirectoryBackgroundContextMenu(config *RegistryConfig) error {
 	commandKeyPath := filepath.Join(shellKeyPath, "command")
 	commandKey, _, err := ensureKey(registry.CURRENT_USER, commandKeyPath, registry.WRITE)
 	if err != nil {
-		return fmt.Errorf("directory background command key: %w", err)
+		return fmt.Errorf("failed to configure folder background context menu action: %w", err)
 	}
 	defer commandKey.Close()
 
 	// Set the command - for directory background, use %V% which represents the current directory
 	commandValue := fmt.Sprintf(`"%s" "%%V"`, config.ExecutablePath)
 	if err := setStringValue(commandKey, "", commandValue); err != nil {
-		return fmt.Errorf("directory background command value: %w", err)
+		return fmt.Errorf("failed to configure folder background context menu action: %w", err)
 	}
 
 	return nil

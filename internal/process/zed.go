@@ -25,22 +25,22 @@ func LaunchZed(zedPath string, projectPath string) error {
 	isRunning, err := isZedRunning()
 
 	if err != nil {
-		return fmt.Errorf("error checking if Zed is running: %w", err)
+		return fmt.Errorf("unable to check if Zed is running: %w", err)
 	}
 
 	if isRunning {
-		fmt.Println("Zed is already running in another instance!!")
-		fmt.Println("This CLI cannot launch a second instance due to Zed's limitation")
+		fmt.Println("❌ Zed is already running in another instance!!")
+		fmt.Println("⚠️  This CLI cannot launch a second instance due to Zed's limitation")
 		return nil
 	}
 
 	if projectPath != "" {
 		if _, err := os.Stat(projectPath); os.IsNotExist(err) {
 			if err := os.MkdirAll(projectPath, 0755); err != nil {
-				return fmt.Errorf("failed to create folder: %w", err)
+				return fmt.Errorf("unable to create project folder: %w", err)
 			}
 
-			fmt.Println("Path doesn't exists")
+			fmt.Println("❌  Path doesn't exists")
 			fmt.Printf("📁  Created new folder: %s", filepath.Clean(projectPath))
 		}
 
@@ -54,7 +54,7 @@ func LaunchZed(zedPath string, projectPath string) error {
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("Error opening Zed: %w", err)
+		return fmt.Errorf("unable to start Zed: %w", err)
 	}
 
 	fmt.Println("✅  Zed opened successfully!!")

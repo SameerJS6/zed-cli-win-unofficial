@@ -25,7 +25,7 @@ func resolvePath(path string) (string, error) {
 	envValue := os.Getenv(envName)
 
 	if envValue == "" {
-		return "", fmt.Errorf("❌ Environment variable is not set or in-correct: %s", envName)
+		return "", fmt.Errorf("environment variable '%s' is not set", envName)
 	}
 
 	restOfPath := path[end+1:]
@@ -39,11 +39,11 @@ func ValidatePath(path string) (string, error) {
 	resolvedPath, err := resolvePath(path)
 
 	if err != nil {
-		return "", fmt.Errorf("Failed to resolve path: %w", err)
+		return "", fmt.Errorf("unable to resolve path: %w", err)
 	}
 
 	if !FileExists(resolvedPath) {
-		return "", fmt.Errorf("Given path doesn't result to any existing file: %s", resolvedPath)
+		return "", fmt.Errorf("file not found at path: %s", resolvedPath)
 	}
 
 	return resolvedPath, nil

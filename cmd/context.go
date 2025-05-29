@@ -35,27 +35,27 @@ func contextCommand() *cli.Command {
 
 					registryCfg := registry.NewConfig(cfg.ZedPath, fileext.SupportedExtensions())
 
-					fmt.Println("Starting Zed Context menu and file association setup...")
+					fmt.Println("🚀 Setting up Zed context menu and file associations...")
 
 					if err := registry.InstallGenericContextMenu(registryCfg); err != nil {
-						fmt.Printf("❌ Error installing generic context menus: %v\n", err)
+						fmt.Printf("❌ Failed to install context menu: %v\n", err)
 						return nil
 					}
 
 					for _, ext := range registryCfg.FileExtensions {
 						if !strings.HasPrefix(ext, ".") && !strings.Contains(ext, ".") {
-							fmt.Printf("Skipping invalid extension: %s (must start with '.')", ext)
+							fmt.Printf("⚠️ Skipping invalid file type: %s\n", ext)
 							continue
 						}
 
 						if err := registry.CreateProgID(registryCfg, ext); err != nil {
-							fmt.Printf("Error creating ProgID for %s: %v. Skipping asociation", ext, err)
+							fmt.Printf("⚠️ Failed to register %s files with Zed, skipping\n", ext)
 							continue
 						}
 
 						progID := fmt.Sprintf("%s%s", registryCfg.AppName, ext)
 						if err := registry.AssociateExtensionWithProgID(ext, progID); err != nil {
-							fmt.Printf("Error associating extension %s with ProgID %s: %v", ext, progID, err)
+							fmt.Printf("❌ Failed to associate %s files with Zed: %v\n", ext, err)
 							return nil
 						}
 					}
@@ -67,9 +67,9 @@ func contextCommand() *cli.Command {
 					}
 
 					fmt.Println("--------------------------------------------------------------------")
-					fmt.Println("✅ Zed context menu and file association setup complete for current user.")
-					fmt.Println("You might need to restart Windows Explorer or log out/in for all changes to take full effect.")
-					fmt.Println("To remove these entries, run: zed context uninstall")
+					fmt.Println("✅ Zed context menu and file associations setup complete!")
+					fmt.Println("💡 You may need to restart Windows Explorer for changes to take effect.")
+					fmt.Println("🔧 To remove these entries, run: zed context uninstall")
 					fmt.Println("--------------------------------------------------------------------")
 
 					return nil
@@ -87,16 +87,16 @@ func contextCommand() *cli.Command {
 					}
 
 					if !cfg.ContextMenuEnabled {
-						fmt.Println("Zed context menu is not installed. Nothing to uninstall.")
+						fmt.Println("ℹ️  Zed context menu is not installed. Nothing to remove.")
 						return nil
 					}
 
 					registryConfig := registry.NewConfig("", fileext.SupportedExtensions())
 
-					fmt.Println("Removing Zed context menu and file associations...")
+					fmt.Println("🧹 Removing Zed context menu and file associations...")
 
 					if err := registry.UninstallAllContextMenus(registryConfig); err != nil {
-						fmt.Printf("❌ Error during uninstall: %v\n", err)
+						fmt.Printf("❌ Failed to remove context menu: %v\n", err)
 						return nil
 					}
 
@@ -108,7 +108,7 @@ func contextCommand() *cli.Command {
 
 					fmt.Println("--------------------------------------------------------------------")
 					fmt.Println("✅ Zed context menu and file associations removed successfully.")
-					fmt.Println("You might need to restart Windows Explorer for all changes to take effect.")
+					fmt.Println("💡 You may need to restart Windows Explorer for changes to take effect.")
 					fmt.Println("--------------------------------------------------------------------")
 
 					return nil
