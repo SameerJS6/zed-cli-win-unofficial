@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"zed-cli-win-unofficial/internal/utils"
 )
 
 // FileExists: Checks if the given path to a file exists or not
@@ -16,7 +17,7 @@ func FileExists(path string) bool {
 // resolvePath: resolves the given path to normal, if there's ENV present else just return the normal path
 func resolvePath(path string) (string, error) {
 	if !strings.HasPrefix(path, "%") && !strings.Contains(path, "%") {
-		fmt.Println("✅ No Environment variable is used, using the path directly: ", path)
+		utils.Debug("No Environment variable is used, using the path directly: %s\n", path)
 		return path, nil
 	}
 
@@ -30,7 +31,7 @@ func resolvePath(path string) (string, error) {
 
 	restOfPath := path[end+1:]
 	resolvedPath := filepath.Join(envValue, restOfPath)
-	fmt.Println("✅ Using resolved path: ", resolvedPath)
+	utils.Debug("Using resolved path: %s\n", resolvedPath)
 	return resolvedPath, nil
 }
 

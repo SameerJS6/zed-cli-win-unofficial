@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+	"zed-cli-win-unofficial/internal/utils"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -111,7 +112,7 @@ func AssociateExtensionWithProgID(ext string, progID string) error {
 		return fmt.Errorf("failed to associate %s files with Zed: %w", ext, err)
 	}
 
-	fmt.Printf("✅ File type %s associated with Zed\n", ext)
+	utils.Debug("File type %s associated with Zed\n", ext)
 	return nil
 }
 
@@ -123,16 +124,16 @@ func DeleteKeyRecursively(baseKey registry.Key, path string) {
 
 	if err != nil {
 		if err == registry.ErrNotExist {
-			fmt.Printf("🔍 Registry entry not found (already removed)\n")
+			utils.Debugln("Registry entry not found (already removed)")
 		} else {
-			fmt.Printf("⚠️ Unable to access registry entry\n")
+			utils.Debugln("Unable to access registry entry")
 		}
 
 		errDelete := registry.DeleteKey(baseKey, path)
 		if errDelete != nil && errDelete != registry.ErrNotExist {
-			fmt.Printf("❌ Failed to remove registry entry\n")
+			utils.Debugln("Failed to remove registry entry")
 		} else if errDelete == nil {
-			fmt.Printf("✅ Registry entry removed\n")
+			utils.Debugln("Registry entry removed")
 		}
 		return
 	}
@@ -141,7 +142,7 @@ func DeleteKeyRecursively(baseKey registry.Key, path string) {
 
 	subKeyNames, err := key.ReadSubKeyNames(0)
 	if err != nil {
-		fmt.Printf("⚠️ Unable to read registry subentries\n")
+		utils.Debugln("Unable to read registry subentries")
 	}
 
 	for _, subKeyName := range subKeyNames {
@@ -154,12 +155,12 @@ func DeleteKeyRecursively(baseKey registry.Key, path string) {
 
 	if deleteErr != nil {
 		if deleteErr == registry.ErrNotExist {
-			fmt.Printf("ℹ️ Registry entry already removed\n")
+			utils.Debugln("Registry entry already removed")
 		} else {
-			fmt.Printf("❌ Failed to remove registry entry\n")
+			utils.Debugln("Failed to remove registry entry")
 		}
 	} else {
-		fmt.Printf("✅ Registry entry removed successfully\n")
+		utils.Debugln("Registry entry removed successfully")
 	}
 }
 
@@ -169,9 +170,9 @@ func DeleteValueSilently(baseKey registry.Key, keyPath string, valueName string)
 
 	if err != nil {
 		if err == registry.ErrNotExist {
-			fmt.Printf("ℹ️ Registry entry not found\n")
+			utils.Debugln("Registry entry not found")
 		} else {
-			fmt.Printf("⚠️ Unable to access registry entry\n")
+			utils.Debugln("Unable to access registry entry")
 		}
 		return
 	}
