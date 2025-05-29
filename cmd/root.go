@@ -6,6 +6,7 @@ import (
 	"os"
 	"zed-cli-win-unofficial/internal/config"
 	"zed-cli-win-unofficial/internal/process"
+	"zed-cli-win-unofficial/internal/utils"
 
 	"github.com/urfave/cli/v3"
 )
@@ -13,15 +14,16 @@ import (
 func Execute(ctx context.Context) error {
 	app := &cli.Command{
 		Name:  "zed",
-		Usage: "Zed's unofficial windows CLI",
+		Usage: "Zed's Unofficial Windows CLI",
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:    "version",
 				Aliases: []string{"v"},
-				Usage:   "Print the current version of cli",
-				Action: func(ctx context.Context, cmd *cli.Command, b bool) error {
-					if b {
-						fmt.Println("v1.0.0")
+				Usage:   "Print the version of Zed CLI",
+				Action: func(ctx context.Context, cmd *cli.Command, value bool) error {
+					if value {
+						utils.Infoln("v1.0.0")
+						return nil
 					}
 					return nil
 				},
@@ -33,29 +35,24 @@ func Execute(ctx context.Context) error {
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			if cmd.Bool("version") {
-				return nil
+				return nil // Early exit for version flag
 			}
 
-			loadedPath, err := config.LoadConfig()
-
+			cfg, err := config.LoadConfig()
 			if err != nil {
-				fmt.Println("Failed to load the executable path from config")
+				utils.Error(fmt.Sprintf("Error loading config: %v", err))
+				utils.Infoln("👉 Tip: Run `zed config set <path>` to configure the Zed executable path.")
 				return nil
 			}
 
-			if !config.FileExists(loadedPath.ZedPath) {
-				fmt.Println("Provided executable path from config doesn't exist")
+			if !config.FileExists(cfg.ZedPath) {
+				utils.Error(fmt.Sprintf("Configured Zed path does not exist: %s", cfg.ZedPath))
+				utils.Infoln("👉 Tip: Run `zed config set <path>` to update the path.")
 				return nil
 			}
 
-			pathArgument := cmd.Args().First()
-
-			if err := process.LaunchZed(loadedPath.ZedPath, pathArgument); err != nil {
-				fmt.Printf("%v\n", err)
-				return nil
-			}
-
-			return nil
+			projectPath := cmd.Args().First()
+			return process.LaunchZed(cfg.ZedPath, projectPath)
 		},
 	}
 

@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"zed-cli-win-unofficial/internal/utils"
 )
 
 // FileExists: Checks if the given path to a file exists or not
@@ -16,7 +17,7 @@ func FileExists(path string) bool {
 // resolvePath: resolves the given path to normal, if there's ENV present else just return the normal path
 func resolvePath(path string) (string, error) {
 	if !strings.HasPrefix(path, "%") && !strings.Contains(path, "%") {
-		fmt.Println("✅ No Environment variable is used, using the path directly: ", path)
+		utils.Debug("No Environment variable is used, using the path directly: %s\n", path)
 		return path, nil
 	}
 
@@ -25,12 +26,12 @@ func resolvePath(path string) (string, error) {
 	envValue := os.Getenv(envName)
 
 	if envValue == "" {
-		return "", fmt.Errorf("❌ Environment variable is not set or in-correct: %s", envName)
+		return "", fmt.Errorf("environment variable '%s' is not set", envName)
 	}
 
 	restOfPath := path[end+1:]
 	resolvedPath := filepath.Join(envValue, restOfPath)
-	fmt.Println("✅ Using resolved path: ", resolvedPath)
+	utils.Debug("Using resolved path: %s\n", resolvedPath)
 	return resolvedPath, nil
 }
 
@@ -39,11 +40,11 @@ func ValidatePath(path string) (string, error) {
 	resolvedPath, err := resolvePath(path)
 
 	if err != nil {
-		return "", fmt.Errorf("Failed to resolve path: %w", err)
+		return "", fmt.Errorf("unable to resolve path: %w", err)
 	}
 
 	if !FileExists(resolvedPath) {
-		return "", fmt.Errorf("Given path doesn't result to any existing file: %s", resolvedPath)
+		return "", fmt.Errorf("file not found at path: %s", resolvedPath)
 	}
 
 	return resolvedPath, nil
