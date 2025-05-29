@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"zed-cli-win-unofficial/internal/utils"
 )
 
 // isZedRunning checks if the Zed is currently running.
@@ -29,8 +30,8 @@ func LaunchZed(zedPath string, projectPath string) error {
 	}
 
 	if isRunning {
-		fmt.Println("❌ Zed is already running in another instance!!")
-		fmt.Println("⚠️  This CLI cannot launch a second instance due to Zed's limitation")
+		utils.Error("Zed is already running in another instance!!")
+		utils.Warning(" This CLI cannot launch a second instance due to Zed's limitation")
 		return nil
 	}
 
@@ -40,8 +41,8 @@ func LaunchZed(zedPath string, projectPath string) error {
 				return fmt.Errorf("unable to create project folder: %w", err)
 			}
 
-			fmt.Println("❌  Path doesn't exists")
-			fmt.Printf("📁  Created new folder: %s", filepath.Clean(projectPath))
+			utils.Error("Path doesn't exists")
+			utils.Info("📁 Created new folder: %s\n", filepath.Clean(projectPath))
 		}
 
 		cmd = exec.Command(zedPath, projectPath)
@@ -57,6 +58,6 @@ func LaunchZed(zedPath string, projectPath string) error {
 		return fmt.Errorf("unable to start Zed: %w", err)
 	}
 
-	fmt.Println("✅  Zed opened successfully!!")
+	utils.Success("Zed opened successfully!!")
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"zed-cli-win-unofficial/internal/utils"
 )
 
 type Config struct {
@@ -41,7 +42,7 @@ func SaveConfig(config *Config) error {
 		return fmt.Errorf("unable to save config data: %w", err)
 	}
 
-	fmt.Printf("✅ Config saved successfully at: %s\n", configPath)
+	utils.Debug("Config saved successfully at: %s\n", configPath)
 	return nil
 }
 

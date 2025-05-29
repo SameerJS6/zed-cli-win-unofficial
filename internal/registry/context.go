@@ -2,9 +2,9 @@ package registry
 
 import (
 	"fmt"
-	"log"
 	"path/filepath"
 	"strings"
+	"zed-cli-win-unofficial/internal/utils"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -46,7 +46,7 @@ func createContextMenuEntry(fileType string, config *RegistryConfig) error {
 
 	iconPath := fmt.Sprintf(`"%s"`, config.ExecutablePath)
 	if err := setStringValue(shellKey, "Icon", iconPath); err != nil {
-		log.Printf("Warning: failed to set icon for %s: %v", fileType, err)
+		utils.Debug("Warning: failed to set icon for %s: %v\n", fileType, err)
 	}
 
 	// Create the command subkey
@@ -82,7 +82,7 @@ func createDirectoryBackgroundContextMenu(config *RegistryConfig) error {
 
 	iconPath := fmt.Sprintf(`"%s"`, config.ExecutablePath)
 	if err := setStringValue(shellKey, "Icon", iconPath); err != nil {
-		fmt.Printf("Warning: failed to set icon for directory background: %v\n", err)
+		utils.Debug("Warning: failed to set icon for directory background: %v\n", err)
 	}
 
 	// Create the command subkey
