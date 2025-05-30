@@ -27,7 +27,7 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --skip=chocolateys
+          args: release --clean --skip=chocolatey
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
           CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
