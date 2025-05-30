@@ -1,0 +1,95 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+
+# The lines below are called `modelines`. See `:help modeline`
+# Feel free to remove those if you don't want/need to use them.
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj
+
+version: 2
+
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+    # you may remove this if you don't need go generate
+    - go generate ./...
+
+project_name: zed-cli-win-unofficial
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+    main: .
+    ldflags:
+      - -s -w
+    binary: zed-cli-win-unofficial
+
+archives:
+  - formats: [zip]
+    files:
+      - src: "scripts/zed.cmd"
+        dst: zed.cmd
+    name_template: >-
+      {{ .ProjectName }}_v{{ .Version }}
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else }}{{ .Arch }}{{ end }}
+    wrap_in_directory: "{{ .ProjectName }}"
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  # By default, GoReleaser uploads:
+  # - All archives (your ZIP files)
+  # - Checksums
+  # - Any other configured artifacts (like Chocolatey packages)
+
+  footer: >-
+
+    ---
+
+    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+
+chocolateys:
+  - name: zed-cli-win-unofficial
+    title: Zed CLI for Windows (Unofficial)
+    authors: SameerJS6
+    project_url: https://github.com/SameerJS6/zed-cli-win-unofficial
+    url_template: "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    icon_url: https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/main/public/icon.png
+    copyright: 2024 SameerJS6
+    license_url: https://github.com/SameerJS6/zed-cli-win-unofficial/blob/main/LICENSE
+    require_license_acceptance: false
+    project_source_url: https://github.com/SameerJS6/zed-cli-win-unofficial
+    docs_url: https://github.com/SameerJS6/zed-cli-win-unofficial/blob/main/readme.md
+    bug_tracker_url: https://github.com/SameerJS6/zed-cli-win-unofficial/issues
+    tags: "zed editor cli windows launcher unofficial"
+    summary: Unofficial Windows CLI launcher for Zed editor
+    description: |
+      An unofficial Windows CLI launcher for Zed editor that provides:
+
+      * Configurable zed.exe path
+      * Path launching with 'zed .'
+      * Just running 'zed' opens last project
+      * Integration with Windows context menu (Open with Zed)
+      * Environment variable parsing for installation paths
+
+      This tool is not affiliated with or endorsed by the Zed team.
+    release_notes: "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/tag/v{{ .Version }}"
+    api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
+    source_repo: "https://push.chocolatey.org/"
+    skip_publish: false
