@@ -1,19 +1,50 @@
-name: Bug Report
-description: Report an issue with the project.
-title: "🐞bug: "
+name: \U0001F41E Bug Report
+description: Report a reproducible issue or unexpected behavior
+title: "[BUG]: "
 labels:
   - bug
 body:
   - type: markdown
     attributes:
       value: |
-        ### Thanks for taking time to fill out this bug report!
+        ##### Thanks for taking time to fill out this bug report!
 
   - type: textarea
-    id: bug-description
+    id: description
     attributes:
-      label: Bug Description
-      description: Provide a clear and consice description of the bug. If you plan to submit a PR for this issue, mention it here.
+      label: Description
+      description: What's the bug? Be clear and consice.
       placeholder: Describe the bug in detail...
     validations:
       required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How we can reproduce the bug?
+      placeholder: |
+        1. Run command '...'
+        2. Click on '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: CLI Version
+      description: Run `zed -v`
+      multiple: false
+      options:
+        - v1.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Windows version
+      placeholder: "eg., Windows 11 22H2"
+    validations:
+      required: false
