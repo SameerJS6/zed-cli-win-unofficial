@@ -68,6 +68,7 @@ chocolateys:
   - name: zed-cli-win-unofficial
     title: Zed CLI for Windows (Unofficial)
     authors: SameerJS6
+    package_source_url: https://github.com/SameerJS6/zed-cli-win-unofficial
     project_url: https://github.com/SameerJS6/zed-cli-win-unofficial
     url_template: "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
     icon_url: https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/main/public/icon.png
