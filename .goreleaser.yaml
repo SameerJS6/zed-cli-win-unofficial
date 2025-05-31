@@ -93,4 +93,4 @@ chocolateys:
     release_notes: "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/tag/v{{ .Version }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     source_repo: "https://push.chocolatey.org/"
-    skip_publish: true
+    skip_publish: false
