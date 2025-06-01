@@ -31,8 +31,8 @@ builds:
 archives:
   - formats: [zip]
     files:
-      - src: "scripts/zed.cmd"
-        dst: zed.cmd
+      - src: "scripts/zed.bat"
+        dst: zed.bat
     name_template: >-
       {{ .ProjectName }}_v{{ .Version }}
       {{- if eq .Arch "amd64" }}x86_64
@@ -64,6 +64,64 @@ release:
 
     Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
 
+# scoops:
+#   - # Name of the scoop manifest
+#     name: zed-cli-win-unofficial
+
+#     # URL template for downloading the archive
+#     # This uses the default GitHub releases URL
+#     url_template: "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+
+#     # Git author used to commit to the repository
+#     commit_author:
+#       name: SameerJS6
+#       email: sameerjs6@users.noreply.github.com
+
+#     # Commit message template
+#     commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }}"
+
+#     # App homepage
+#     homepage: "https://github.com/SameerJS6/zed-cli-win-unofficial"
+
+#     # App description - the usual guideline is to wrap at 80 chars
+#     description: |
+#       An unofficial Windows CLI launcher for Zed editor that provides:
+
+#       * Configurable zed.exe path detection
+#       * Path launching with 'zed .' to open directories
+#       * Running 'zed' without arguments opens the last project
+#       * Integration with Windows context menu (Open with Zed)
+#       * Environment variable parsing for installation paths
+
+#       This tool is not affiliated with or endorsed by the Zed team.
+
+#     # License
+#     license: MIT
+
+#     # Commands to execute after installation
+#     post_install:
+#       [
+#         "Write-Host 'Zed CLI installed successfully!'",
+#         "Write-Host 'Usage: zed [path] - opens Zed editor'",
+#         "Write-Host 'Example: zed . - opens current directory in Zed'",
+#       ]
+
+#     # Dependencies (if any)
+#     # depends: ["git"]
+
+#     # GOAMD64 version to use if there are multiple amd64 versions
+#     goamd64: v1
+
+#     # Repository configuration - USING THE SAME REPO
+#     repository:
+#       owner: SameerJS6
+#       name: zed-cli-win-unofficial # ← Same as your main repo!
+#       branch: main
+#       token: "{{ .Env.GITHUB_TOKEN }}"
+
+#     # Skip upload during testing/development
+#     skip_upload: true
+
 chocolateys:
   - name: zed-cli-win-unofficial
     title: Zed CLI for Windows (Unofficial)
@@ -93,4 +151,4 @@ chocolateys:
     release_notes: "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/tag/v{{ .Version }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     source_repo: "https://push.chocolatey.org/"
-    skip_publish: false
+    skip_publish: true
