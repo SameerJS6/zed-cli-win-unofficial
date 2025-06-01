@@ -39,10 +39,10 @@ jobs:
         run: ./scripts/check-goreleaser-output.ps1
         shell: pwsh
 
-      - name: Fix Scoop Manifest (Test - Log Only)
+      - name: Fix Scoop Manifest
         run: ./scripts/fix-scoop-manifest.ps1
         shell: pwsh
 
-      - name: Show what would be committed
-        run: ./scripts/show-commit-summary.ps1
+      - name: Commit scoop manifest changes
+        run: ./scripts/commit-scoop-manifest.ps1
         shell: pwsh
