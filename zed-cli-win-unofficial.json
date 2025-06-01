@@ -1,12 +1,12 @@
 {
-    "version": "1.0.0-beta-scoop-7",
+    "version": "1.0.0-beta-scoop-8",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/download/v1.0.0-beta-scoop-7/zed-cli-win-unofficial_v1.0.0-beta-scoop-7x86_64.zip",
+            "url": "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/download/v1.0.0-beta-scoop-8/zed-cli-win-unofficial_v1.0.0-beta-scoop-8x86_64.zip",
             "bin": [
                 "zed-cli-win-unofficial/zed-cli-win-unofficial.exe"
             ],
-            "hash": "c6832de914f8ffe0d0653eb8e48f84471212090fc18c46b2746e386736cf4370"
+            "hash": "c1960024ae4bfca930a9261788fb917bb4b7d24f072a94384cf1dcac90bd16d7"
         }
     },
     "homepage": "https://github.com/SameerJS6/zed-cli-win-unofficial",
