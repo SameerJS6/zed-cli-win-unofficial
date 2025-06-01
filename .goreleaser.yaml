@@ -120,7 +120,7 @@ scoops:
       token: "{{ .Env.GITHUB_TOKEN }}"
 
     # Skip upload during testing/development
-    skip_upload: true
+    skip_upload: false
 
 chocolateys:
   - name: zed-cli-win-unofficial
