@@ -1,0 +1,20 @@
+{
+    "version": "1.0.0-beta-scoop-3",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/download/v1.0.0-beta-scoop-3/zed-cli-win-unofficial_v1.0.0-beta-scoop-3x86_64.zip",
+            "bin": [
+                "zed-cli-win-unofficial/zed-cli-win-unofficial.exe"
+            ],
+            "hash": "3fa3581ac115044b4adf21b700b763621fc25f74889aefdc0883b29c40b484c3"
+        }
+    },
+    "homepage": "https://github.com/SameerJS6/zed-cli-win-unofficial",
+    "license": "MIT",
+    "description": "An unofficial Windows CLI launcher for Zed editor that provides:\n\n* Configurable zed.exe path detection\n* Path launching with 'zed .' to open directories\n* Running 'zed' without arguments opens the last project\n* Integration with Windows context menu (Open with Zed)\n* Environment variable parsing for installation paths\n\nThis tool is not affiliated with or endorsed by the Zed team.\n",
+    "post_install": [
+        "Write-Host 'Zed CLI installed successfully!'",
+        "Write-Host 'Usage: zed [path] - opens Zed editor'",
+        "Write-Host 'Example: zed . - opens current directory in Zed'"
+    ]
+}
