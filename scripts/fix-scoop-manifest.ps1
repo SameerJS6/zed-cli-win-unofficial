@@ -31,17 +31,10 @@ if (Test-Path 'dist/scoop/zed-cli-win-unofficial.json') {
     Write-Host "📄 Updated manifest:"
     Write-Host $updatedContent
     
-    # Create bucket directory for testing
-    if (-not (Test-Path 'bucket')) {
-      New-Item -ItemType Directory -Path 'bucket'
-      Write-Host ""
-      Write-Host "📁 Created bucket directory (for testing)"
-    }
-    
     # Save the updated manifest with preserved formatting
-    $updatedContent | Set-Content 'bucket/zed-cli-win-unofficial.json' -NoNewline
+    $updatedContent | Set-Content 'zed-cli-win-unofficial.json' -NoNewline
     Write-Host ""
-    Write-Host "💾 Saved updated manifest to bucket/ (for testing)"
+    Write-Host "💾 Saved updated manifest to root level (for testing)"
     Write-Host "✅ Scoop manifest fix test successful!"
     
   }
