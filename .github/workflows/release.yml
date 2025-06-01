@@ -45,5 +45,10 @@ jobs:
         shell: pwsh
 
       - name: Commit scoop manifest changes
-        run: ./scripts/commit-scoop-manifest.ps1
-        shell: pwsh
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Scoop update for zed-cli-win-unofficial version ${{ github.ref_name }} with zed.bat"
+          file_pattern: "zed-cli-win-unofficial.json"
+          commit_user_name: "SameerJS6"
+          commit_user_email: "sameerjs6@users.noreply.github.com"
+          commit_author: "SameerJS6 <sameerjs6@users.noreply.github.com>"
