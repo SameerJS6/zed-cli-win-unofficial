@@ -31,7 +31,7 @@ func LaunchZed(zedPath string, projectPath string) error {
 
 	if isRunning {
 		utils.Error("Zed is already running in another instance!!")
-		utils.Warning(" This CLI cannot launch a second instance due to Zed's limitation")
+		utils.Warning("This CLI cannot launch a second instance due to Zed's limitation")
 		return nil
 	}
 
