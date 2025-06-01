@@ -37,12 +37,12 @@ jobs:
 
       - name: Check what GoReleaser created
         run: ./scripts/check-goreleaser-output.ps1
-        shell: powershell
+        shell: pwsh
 
       - name: Fix Scoop Manifest (Test - Log Only)
         run: ./scripts/fix-scoop-manifest.ps1
-        shell: powershell
+        shell: pwsh
 
       - name: Show what would be committed
         run: ./scripts/show-commit-summary.ps1
-        shell: powershell
+        shell: pwsh
