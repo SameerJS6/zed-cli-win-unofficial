@@ -1,12 +1,12 @@
-$BaseGitHubRequest = "https://github.com/SameerJS6/zed-cli-win-unofficial/tree/main"
+$BaseGitHubRequest = "https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/refs/heads/main/scripts"
 $TempInstallerPath = Join-Path $env:TEMP "Zed-With-CLI-Installer-$(Get-Random)"
 
 try {
   Write-Host "Creating temporary installation directory..."
   New-Item -ItemType Directory -Path $TempInstallerPath -ErrorAction Stop | Out-Null
 
-  $InstallerScriptUri = "$BaseGitHubRequest/scripts/installation/install-with-zed.ps1"
-  $UtilsScriptUri = "$BaseGitHubRequest/scripts/utils/utils.psm1"
+  $InstallerScriptUri = "$BaseGitHubRequest/installation/install-with-zed.ps1"
+  $UtilsScriptUri = "$BaseGitHubRequest/utils/utils.psm1"
 
   $InstallerScriptLocalPath = Join-Path $TempInstallerPath "install-with-zed.ps1"
   $UtilsScriptLocalPath = Join-Path $TempInstallerPath "utils.psm1"
