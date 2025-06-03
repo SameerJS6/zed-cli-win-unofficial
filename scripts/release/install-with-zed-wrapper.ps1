@@ -6,10 +6,10 @@ try {
   New-Item -ItemType Directory -Path $TempInstallerPath -ErrorAction Stop | Out-Null
 
   $InstallerScriptUri = "$BaseGitHubRequest/installation/install-with-zed.ps1"
-  $UtilsScriptUri = "$BaseGitHubRequest/utils/utils.psm1"
+  $UtilsScriptUri = "$BaseGitHubRequest/utils/utils.ps1"
 
   $InstallerScriptLocalPath = Join-Path $TempInstallerPath "install-with-zed.ps1"
-  $UtilsScriptLocalPath = Join-Path $TempInstallerPath "utils.psm1"
+  $UtilsScriptLocalPath = Join-Path $TempInstallerPath "utils.ps1"
 
   Write-Host "Downloading Installation Script..."
   Invoke-WebRequest -Uri $InstallerScriptUri -OutFile $InstallerScriptLocalPath -ErrorAction Stop

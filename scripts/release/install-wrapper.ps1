@@ -7,10 +7,10 @@ try {
 
   # Download all required scripts
   $InstallerScriptUrl = "$BaseGitHubRequest/installation/install.ps1"
-  $UtilsScriptUrl = "$BaseGitHubRequest/utils/utils.psm1"
+  $UtilsScriptUrl = "$BaseGitHubRequest/utils/utils.ps1"
 
   $InstallerScriptLocalPath = Join-Path $TempInstallerPath "install.ps1"
-  $UtilsScriptLocalPath = Join-Path $TempInstallerPath "utils.psm1"
+  $UtilsScriptLocalPath = Join-Path $TempInstallerPath "utils.ps1"
 
   Write-Host "Downloading installation script..."
   Invoke-WebRequest -Uri $InstallerScriptUrl -OutFile $InstallerScriptLocalPath -ErrorAction Stop
