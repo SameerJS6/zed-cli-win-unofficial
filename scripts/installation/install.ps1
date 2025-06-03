@@ -20,10 +20,8 @@ $apiUrl = "https://api.github.com/repos/$repoOwner/$repoName/releases/latest"
 # Import Get-FileFromWeb function
 . "$PSScriptRoot\..\get-file-from-web.ps1"
 
-# Set default install path if not provided
-
+# Set default install path
 $InstallPath = Join-Path $env:LOCALAPPDATA $repoName
-
 
 # Helper Functions
 function Write-Status {
@@ -98,8 +96,6 @@ Write-Status "Starting installation of $repoName..."
 # Check if already installed
 if ((Test-Path $InstallPath) -and -not $Force) {
   Write-Status "Already installed at: $InstallPath" "Warning"
-  Write-Status "Use -Force to reinstall" "Info"
-    
   $choice = Read-Host "Continue anyway? (y/N)"
   if ($choice -notmatch '^y(es)?$') {
     Write-Status "Installation cancelled" "Warning"
@@ -110,7 +106,6 @@ if ((Test-Path $InstallPath) -and -not $Force) {
 # Create temp directory
 $tempDir = Join-Path $env:TEMP "zed-cli-install-$(Get-Random)"
 New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
-Write-Status "Created temp directory: $tempDir"
 
 try {
   # Get latest release info
@@ -121,7 +116,7 @@ try {
     
   # Find Windows zip asset
   $windowsAsset = $releaseInfo.assets | Where-Object { 
-    $_.name -match "x64"
+    $_.name -match "x86_64"
   } | Select-Object -First 1
     
   if (-not $windowsAsset) {
@@ -154,7 +149,7 @@ try {
   Write-Status "Extracting archive..."
   Expand-Archive -Path $downloadPath -DestinationPath $tempDir -Force
     
-  # Find the extracted folder (it should contain the project name)
+  # Find the extracted folder
   $extractedFolder = Get-ChildItem $tempDir -Directory | Where-Object { $_.Name -match $repoName } | Select-Object -First 1
     
   if (-not $extractedFolder) {
@@ -199,9 +194,7 @@ finally {
   # Cleanup
   if (Test-Path $tempDir) {
     Remove-Item $tempDir -Recurse -Force -ErrorAction SilentlyContinue
-    Write-Status "Cleaned up temporary files"
   }
 }
 
-Write-Status ""
 Write-Status "Installation complete! 🎉" "Success"
