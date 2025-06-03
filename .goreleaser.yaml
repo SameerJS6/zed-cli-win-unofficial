@@ -65,22 +65,12 @@ release:
     Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
 
 scoops:
-  - # Name of the scoop manifest
-    name: zed-cli-win-unofficial
-
-    # URL template for downloading the archive
-    # This uses the default GitHub releases URL
+  - name: zed-cli-win-unofficial
     url_template: "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-
-    # Git author used to commit to the repository
     commit_author:
       name: SameerJS6
       email: sameerjs6@users.noreply.github.com
-
-    # Commit message template
-    commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }}"
-
-    # App homepage
+    commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }} by GoReleaser"
     homepage: "https://github.com/SameerJS6/zed-cli-win-unofficial"
 
     # App description - the usual guideline is to wrap at 80 chars
@@ -95,10 +85,7 @@ scoops:
 
       This tool is not affiliated with or endorsed by the Zed team.
 
-    # License
     license: MIT
-
-    # Commands to execute after installation
     post_install:
       [
         "Write-Host 'Zed CLI installed successfully!'",
@@ -106,20 +93,12 @@ scoops:
         "Write-Host 'Example: zed . - opens current directory in Zed'",
       ]
 
-    # Dependencies (if any)
-    # depends: ["git"]
-
-    # GOAMD64 version to use if there are multiple amd64 versions
-    goamd64: v1
-
-    # Repository configuration - USING THE SAME REPO
     repository:
       owner: SameerJS6
       name: zed-cli-win-unofficial # ← Same as your main repo!
       branch: main
       token: "{{ .Env.GITHUB_TOKEN }}"
 
-    # Skip upload during testing/development
     skip_upload: false
 
 chocolateys:
