@@ -1,3 +1,5 @@
+#Requires -Version 5.0
+
 <#
 .SYNOPSIS
     Install zed-cli-win-unofficial from GitHub releases
@@ -13,7 +15,7 @@ param(
 )
 
 # Import all helper functions
-. "./utils.ps1"
+. "$PSScriptRoot\utils.ps1"
 
 # Configuration
 $repoOwner = "SameerJS6"
@@ -136,4 +138,4 @@ finally {
   }
 }
 
-Write-Status "Installation complete! 🎉" "Success"
+Write-Status "Installation complete! [SUCCESS]" "Success"
