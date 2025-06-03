@@ -36,10 +36,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
 
-      - name: Check what GoReleaser created
-        run: ./scripts/check-goreleaser-output.ps1
-        shell: pwsh
-
       - name: Commit scoop manifest changes
         run: ./scripts/commit-scoop-manifest.ps1
         shell: pwsh
