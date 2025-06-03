@@ -1,4 +1,4 @@
-$BaseGitHubRequest = "https://github.com/SameerJS6/zed-cli-win-unofficial/tree/main"
+$BaseGitHubRequest = "https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/refs/heads/main/scripts"
 $TempInstallerPath = Join-Path $env:TEMP "CLI-only-installer-$(Get-Random)"
 
 try {
@@ -6,8 +6,8 @@ try {
   New-Item -ItemType Directory -Path $TempInstallerPath -ErrorAction Stop | Out-Null
 
   # Download all required scripts
-  $InstallerScriptUrl = "$BaseGitHubRequest/scripts/installation/install.ps1"
-  $UtilsScriptUrl = "$BaseGitHubRequest/scripts/utils/utils.psm1"
+  $InstallerScriptUrl = "$BaseGitHubRequest/installation/install.ps1"
+  $UtilsScriptUrl = "$BaseGitHubRequest/utils/utils.psm1"
 
   $InstallerScriptLocalPath = Join-Path $TempInstallerPath "install.ps1"
   $UtilsScriptLocalPath = Join-Path $TempInstallerPath "utils.psm1"
