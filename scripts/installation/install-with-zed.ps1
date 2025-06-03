@@ -371,7 +371,7 @@ try {
     
   # Configure CLI if we have both components
   if ($zedExePath -and $cliExePath) {
-    $configSuccess = Configure-ZedCli -ZedExePath $zedExePath -CliExePath $cliExePath
+    $configSuccess = Set-ZedCli -ZedExePath $zedExePath -CliExePath $cliExePath
     if ($configSuccess) {
       Write-Status "✅ Configuration completed" "Success" "CLI"
     }
@@ -392,11 +392,6 @@ try {
     Write-Status "  ⚡ CLI Launcher: $cliExePath" "Success"
   }
   Write-Status ""
-  Write-Status "Available commands:" "Info"
-  Write-Status "  zed .                    # Open current directory" "Info"
-  Write-Status "  zed C:\path\to\project  # Open specific directory" "Info"
-  Write-Status "  zed                     # Open last project" "Info"
-  Write-Status ""
   Write-Status "⚠️  You may need to restart your terminal to use the commands" "Warning"
 }
 catch {
@@ -404,5 +399,4 @@ catch {
   exit 1
 }
 
-Write-Status ""
 Write-Status "🎉 Setup complete! Happy coding with Zed! 🚀" "Success" 
