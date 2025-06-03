@@ -321,13 +321,3 @@ function Get-FileFromWeb {
     }    
   }
 }
-
-
-Export-ModuleMember -Function `
-  Write-Status, `
-  Add-ToPath, `
-  New-TempDirectory, `
-  Get-LatestRelease, `
-  Find-WindowsAsset, `
-  Install-FromZip, `
-  Get-FileFromWeb

@@ -13,7 +13,7 @@ param(
 )
 
 # Import all helper functions
-. "./utils.psm1"
+. "./utils.ps1"
 
 # Configuration
 $repoOwner = "SameerJS6"
