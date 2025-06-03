@@ -2,26 +2,23 @@
 
 This project is an unofficial Windows CLI for Zed (built from source). It provides all basic features:
 
-- launching Zed (`zed`),
-- opening directories or projects with `zed <path>`
-- adding an 'Open with Zed' context menu integration.
+- Launching Zed (`zed`),
+- Opening directories or projects with `zed <path>`
+- Adding an 'Open with Zed' context menu integration.
 
-<details>
-<summary>📋 Table of Contents</summary>
+## Table of Content
 
 - [Usage](#usage)
 - [Features & Behavior](#features--behavior)
   - [Auto-Directory Creation](#auto-directory-creation)
   - [Single Instance Limitation](#single-instance-limitation)
 - [Installation](#installation)
-  - [Native Installation Scripts (Coming Soon)](#native-installation-scripts-coming-soon)
+  - [Native Installation Scripts](#native-installation-scripts-coming-soon)
   - [Scoop](#scoop)
   - [Chocolatey (Coming Soon)](#chocolatey-coming-soon)
   - [Manual (GitHub Release)](#manual-github-release)
 - [Disclaimer & Affiliation](#disclaimer--affiliation)
 - [License](#license)
-
-</details>
 
 ## Usage
 
@@ -72,14 +69,45 @@ A pop-up window with a dark background displays two lines of text. The first lin
 
 Recommended installation methods in order of preference:
 
-1. [Native Installation Scripts (Coming Soon)](#native-installation-scripts-coming-soon)
+1. [Native Installation Scripts](#native-installation-scripts)
 2. [Scoop](#scoop)
 3. [Chocolatey (Coming Soon)](#chocolatey-coming-soon)
 4. [Manual (GitHub Release)](#manual-github-release)
 
-### Native Installation Scripts (Coming Soon)
+### Native Installation Scripts
 
-> A PowerShell-based installer script for automating CLI setup will be available soon.
+Running the native PowerShell scripts will handle everything related to setting up environment variables on your system.
+
+#### Install CLI
+
+Download and run the installation script for the Unofficial Zed CLI:
+
+```powershell
+Invoke-WebRequest -Uri "https://github.com/SameerJS6/zed-cli-win-unofficial/blob/main/scripts/installation/install.ps1"
+```
+
+#### Install Zed + CLI (All-in-One)
+
+Install both Zed (Unofficial Build) and the Unofficial CLI with zero setup. This script handles everything automatically:
+
+```powershell
+Invoke-WebRequest -Uri"https://github.com/SameerJS6/zed-cli-win-unofficial/blob/main/scripts/installation/install-with-zed.ps1"
+```
+
+> [!NOTE]
+> Installing via this method will place Zed and the Unofficial Zed CLI in their default directories.
+>
+> #### Zed
+>
+> ```powershell
+> %LOCALAPPDATA%\Programs\Zed
+> ```
+>
+> #### Unofficial Zed CLI
+>
+> ```powershell
+> %LOCALAPPDATA%\zed-cli-win-unofficial
+> ```
 
 ### Scoop
 
@@ -89,6 +117,14 @@ Install using [Scoop](https://scoop.sh/) for easy updates and management:
 scoop bucket add zed-cli-unofficial https://github.com/SameerJS6/zed-cli-win-unofficial
 scoop install zed-cli-unofficial/zed-cli-win-unofficial
 ```
+
+> [!TIP]
+> If you don't have **Scoop** installed, run the following commands in **PowerShell** to install it:
+>
+> ```powershell
+> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+> Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+> ```
 
 ### Chocolatey (Coming Soon)
 
