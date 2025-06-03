@@ -21,7 +21,7 @@ try {
   Push-Location $TempInstallerPath
 
   Write-Host "Executing Installation Script..."
-  . "./install.ps1"
+  . "$PSScriptRoot\install.ps1"
 
 }
 catch {

@@ -8,9 +8,9 @@ function Write-Status {
   }
 
   $icon = switch ($Component) {
-    "Zed" { "🎨" }
-    "CLI" { "⚡" }
-    default { "🔧" }
+    "Zed" { "[ZED]" }
+    "CLI" { "[CLI]" }
+    default { "[INFO]" }
   }
   Write-Host "$icon $Message" -ForegroundColor $color
 }
