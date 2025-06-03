@@ -13,7 +13,7 @@ This project is an unofficial Windows CLI for Zed (built from source). It provid
   - [Auto-Directory Creation](#auto-directory-creation)
   - [Single Instance Limitation](#single-instance-limitation)
 - [Installation](#installation)
-  - [Native Installation Scripts](#native-installation-scripts-coming-soon)
+  - [Native Installation Scripts](#native-installation-scripts)
   - [Scoop](#scoop)
   - [Chocolatey (Coming Soon)](#chocolatey-coming-soon)
   - [Manual (GitHub Release)](#manual-github-release)
@@ -83,7 +83,7 @@ Running the native PowerShell scripts will handle everything related to setting 
 Download and run the installation script for the Unofficial Zed CLI:
 
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/SameerJS6/zed-cli-win-unofficial/blob/main/scripts/installation/install.ps1"
+irm https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/blob/main/scripts/release/install-wrapper.ps1 | iex
 ```
 
 #### Install Zed + CLI (All-in-One)
@@ -91,7 +91,7 @@ Invoke-WebRequest -Uri "https://github.com/SameerJS6/zed-cli-win-unofficial/blob
 Install both Zed (Unofficial Build) and the Unofficial CLI with zero setup. This script handles everything automatically:
 
 ```powershell
-Invoke-WebRequest -Uri"https://github.com/SameerJS6/zed-cli-win-unofficial/blob/main/scripts/installation/install-with-zed.ps1"
+irm https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/blob/main/scripts/release/install-with-zed-wrapper.ps1 | iex
 ```
 
 > [!NOTE]

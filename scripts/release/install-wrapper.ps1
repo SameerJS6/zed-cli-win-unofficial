@@ -1,0 +1,32 @@
+$BaseGitHubRequest = "https://github.com/SameerJS6/zed-cli-win-unofficial/tree/main"
+$TempInstallerPath = Join-Path $env:TEMP "CLI-only-installer-$(Get-Random)"
+
+try {
+  Write-Host "Creating temporary installation directory..."
+  New-Item -ItemType Directory -Path $TempInstallerPath -ErrorAction Stop | Out-Null
+
+  # Download all required scripts
+  $InstallerScriptUrl = "$BaseGitHubRequest/scripts/installation/install.ps1"
+  $UtilsScriptUrl = "$BaseGitHubRequest/scripts/utils/utils.psm1"
+
+  $InstallerScriptLocalPath = Join-Path $TempInstallerPath "install.ps1"
+  $UtilsScriptLocalPath = Join-Path $TempInstallerPath "utils.psm1"
+
+  Write-Host "Downloading installation script..."
+  Invoke-WebRequest -Uri $InstallerScriptUrl -OutFile $InstallerScriptLocalPath -ErrorAction Stop
+
+  Write-Host "Downloading utility script..."
+  Invoke-WebRequest -Uri $UtilsScriptUrl -OutFile $UtilsScriptLocalPath -ErrorAction Stop
+
+  Push-Location $TempInstallerPath
+
+  Write-Host "Executing Installation Script..."
+  . "./install.ps1"
+
+}
+catch {
+  Write-Host "An error occured while installation setup: $($_.Exception.Message)" -ForegroundColor Red
+}
+finally {
+  try { Pop-Location } catch {}
+} 
