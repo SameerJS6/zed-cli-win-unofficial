@@ -283,7 +283,7 @@ function Set-ZedCli {
     }
 
     # Configure CLI to use Zed installation
-    $configResult = & $CliExePath "config" "set" $ZedExePath 2>&1
+    $configResult = & $CliExePath "config" "set" "`"$ZedExePath`"" 2>&1
 
     if ($LASTEXITCODE -eq 0) {
       Write-Status "Successfully configured CLI with Zed path" "Success" "CLI"
@@ -338,6 +338,10 @@ try {
   # Install CLI
   $cliExePath = Install-ZedCli
   Write-Status "✅ CLI installation completed" "Success" "CLI"
+
+
+  Write-Status "Refreshing PATH environment variable for current session..." "Info" "CLI"
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
   # Configure CLI if we have both components
   if ($zedExePath -and $cliExePath) {
