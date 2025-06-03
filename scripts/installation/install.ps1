@@ -8,13 +8,12 @@
     Force reinstallation even if already installed
 #>
 
-# Import all helper functions
-. "./utils.psm1"
-
-
 param(
   [switch]$Force
 )
+
+# Import all helper functions
+. "./utils.psm1"
 
 # Configuration
 $repoOwner = "SameerJS6"
