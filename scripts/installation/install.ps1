@@ -14,8 +14,10 @@ param(
   [switch]$Force
 )
 
+$Global:ScriptDebugMode = $false
+
 # Import all helper functions
-. "$PSScriptRoot\utils.ps1"
+. "$PSScriptRoot\..\utils\utils.ps1"
 
 # Configuration
 $repoOwner = "SameerJS6"
@@ -27,14 +29,14 @@ $apiUrl = "https://api.github.com/repos/$repoOwner/$repoName/releases/latest"
 $InstallPath = Join-Path $env:LOCALAPPDATA $repoName
 
 # Main Installation Process
-Write-Status "Starting installation of $repoName..."
+Write-Info "Starting installation of $repoName..."
 
 # Check if already installed
 if ((Test-Path $InstallPath) -and -not $Force) {
-  Write-Status "Already installed at: $InstallPath" "Warning"
+  Write-Warning "Already installed at: $InstallPath"
   $choice = Read-Host "Continue anyway? (y/n)"
   if ($choice -notmatch '^y(es)?$') {
-    Write-Status "Installation cancelled" "Warning"
+    Write-Warning "Installation cancelled"
     exit 0
   }
 }
@@ -59,21 +61,22 @@ try {
     throw "Batch wrapper not found: $batPath"
   }
 
-  Write-Status "Verified installation files" "Success"
+  Write-Success "Verified installation files"
+  Write-Debug "Testing Debug Logs in Debug Mode working or not!!!"
 
   # Add to PATH
-  Write-Status "Adding to PATH..."
+  Write-Info "Adding to PATH..."
   if (Add-ToPath $InstallPath) {
-    Write-Status "Installation completed successfully!" "Success" -SuppressDebug
-    Write-Status "⚠️  You may need to restart your terminal to use the commands" "Warning" -SuppressDebug
+    Write-Success "Installation completed successfully!"
+    Write-Warning "You may need to restart your terminal to use the commands"
   }
   else {
-    Write-Status "Installation completed but PATH update failed" "Warning"
-    Write-Status "Manual PATH setup required: $InstallPath" "Warning"
+    Write-Warning "Installation completed but PATH update failed"
+    Write-Warning "Manual PATH setup required: $InstallPath"
   }
 }
 catch {
-  Write-Status "Installation failed: $($_.Exception.Message)" "Error"
+  Write-Error "Installation failed: $($_.Exception.Message)"
   exit 1
 }
 finally {
@@ -83,4 +86,4 @@ finally {
   }
 }
 
-Write-Status "Installation complete! [SUCCESS]" "Success"
+Write-Success "Installation complete!"
