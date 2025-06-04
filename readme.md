@@ -174,10 +174,3 @@ This project is an unofficial Windows CLI launcher for [Zed](https://zed.dev). I
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/refs/heads/main/scripts/release/install-wrapper.ps1
-
-https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/refs/heads/main/scripts/release/install-wrapper.ps1
-
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-irm https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/refs/heads/main/scripts/release/install-wrapper.ps1 | iex
