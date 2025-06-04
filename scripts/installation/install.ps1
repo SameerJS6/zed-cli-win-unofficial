@@ -119,7 +119,6 @@ try {
   Write-Status "Adding to PATH..."
   if (Add-ToPath $InstallPath) {
     Write-Status "Installation completed successfully!" "Success"
-    Write-Status ""
     Write-Status "⚠️  You may need to restart your terminal to use the commands" "Warning"
   }
   else {

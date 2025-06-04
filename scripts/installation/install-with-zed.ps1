@@ -39,7 +39,7 @@ if (-not $CliInstallPath) {
 }
 
 function Install-ZedEditor {
-  Write-Status "Starting Zed editor installation..." "Info" "Zed" -Debug
+  Write-Status "Starting Zed editor installation..." "Info" "Zed"
 
   # Check if already installed
   if ((Test-Path $ZedInstallPath) -and -not $Force) {
@@ -144,25 +144,25 @@ function Install-ZedEditor {
       throw "Zed executable not found after installation: $zedExePath"
     }
 
-    Write-Status "Verified Zed installation" "Success" "Zed" -Debug
+    Write-Status "Verified Zed installation" "Success" "Zed"
 
     return $zedExePath
   }
   catch {
-    Write-Status "Zed installation failed: $($_.Exception.Message)" "Error" "Zed" -Debug
+    Write-Status "Zed installation failed: $($_.Exception.Message)" "Error" "Zed"
     throw
   }
   finally {
     # Cleanup
     if (Test-Path $tempDir) {
       Remove-Item $tempDir -Recurse -Force -ErrorAction SilentlyContinue
-      Write-Status "Cleaned up Zed temp files" "Info" "Zed"
+      Write-Status "Cleaned up Zed temp files" "Info" "Zed" -Debug
     }
   }
 }
 
 function Install-ZedCli {
-  Write-Status "Starting zed-cli-win-unofficial installation..." "Info" "CLI" -Debug
+  Write-Status "Starting zed-cli-win-unofficial installation..." "Info" "CLI"
 
   # Debug: Show initial paths
   Write-Status -Message "CliInstallPath = '$CliInstallPath'" -Type "Debug" -Component "Debug"
@@ -259,7 +259,7 @@ function Install-ZedCli {
       throw "CLI batch wrapper not found: $batPath"
     }
 
-    Write-Status "Verified CLI installation" "Success" "CLI" -Debug
+    Write-Status "Verified CLI installation" "Success" "CLI"
 
     # Add CLI to PATH
     Write-Status "Adding CLI to PATH..." "Info" "CLI"
@@ -268,14 +268,14 @@ function Install-ZedCli {
     return $cliExePath
   }
   catch {
-    Write-Status "CLI installation failed: $($_.Exception.Message)" "Error" "CLI" -Debug
+    Write-Status "CLI installation failed: $($_.Exception.Message)" "Error" "CLI"
     throw
   }
   finally {
     # Cleanup
     if (Test-Path $tempDir) {
       Remove-Item $tempDir -Recurse -Force -ErrorAction SilentlyContinue
-      Write-Status "Cleaned up CLI temp files" "Info" "CLI"
+      Write-Status "Cleaned up CLI temp files" "Info" "CLI" -Debug
     }
   }
 }
@@ -283,7 +283,7 @@ function Install-ZedCli {
 function Set-ZedCli {
   param([string]$ZedExePath, [string]$CliExePath)
 
-  Write-Status "Configuring zed-cli-win-unofficial..." "Info" "CLI" -Debug
+  Write-Status "Configuring zed-cli-win-unofficial..." "Info" "CLI"
 
   try {
     # Refresh PATH for current session to ensure CLI is available
@@ -353,8 +353,8 @@ function Set-ZedCli {
     }
     else {
       Write-Status "All configuration attempts failed" "Error" "CLI"
-      Write-Status "Output: $configResult" "Info" "CLI"
-      Write-Status "Exit code: $LASTEXITCODE" "Info" "CLI"
+      Write-Status "Output: $configResult" "Info" "CLI" -Debug
+      Write-Status "Exit code: $LASTEXITCODE" "Info" "CLI" -Debug
       return $false
     }
   }
@@ -425,9 +425,7 @@ try {
   }
 
   # Success summary
-  Write-Status ""
   Write-Status "🎉 Installation completed successfully!" "Success"
-  Write-Status ""
   Write-Status "Installed components:" "Info"
   if ($zedExePath) {
     Write-Status "  🎨 Zed Editor: $zedExePath" "Success"
@@ -435,7 +433,6 @@ try {
   if ($cliExePath) {
     Write-Status "  ⚡ CLI Launcher: $cliExePath" "Success"
   }
-  Write-Status ""
   Write-Status "⚠️  You may need to restart your terminal to use the commands" "Warning"
 }
 catch {
