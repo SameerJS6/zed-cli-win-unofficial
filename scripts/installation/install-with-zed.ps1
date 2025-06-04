@@ -39,7 +39,7 @@ if (-not $CliInstallPath) {
 }
 
 function Install-ZedEditor {
-  Write-Status "Starting Zed editor installation..." "Info" "Zed"
+  Write-Status "Starting Zed editor installation..." "Info" "Zed" -Debug
 
   # Check if already installed
   if ((Test-Path $ZedInstallPath) -and -not $Force) {
@@ -144,12 +144,12 @@ function Install-ZedEditor {
       throw "Zed executable not found after installation: $zedExePath"
     }
 
-    Write-Status "Verified Zed installation" "Success" "Zed"
+    Write-Status "Verified Zed installation" "Success" "Zed" -Debug
 
     return $zedExePath
   }
   catch {
-    Write-Status "Zed installation failed: $($_.Exception.Message)" "Error" "Zed"
+    Write-Status "Zed installation failed: $($_.Exception.Message)" "Error" "Zed" -Debug
     throw
   }
   finally {
@@ -162,11 +162,16 @@ function Install-ZedEditor {
 }
 
 function Install-ZedCli {
-  Write-Status "Starting zed-cli-win-unofficial installation..." "Info" "CLI"
+  Write-Status "Starting zed-cli-win-unofficial installation..." "Info" "CLI" -Debug
+
+  # Debug: Show initial paths
+  Write-Status -Message "CliInstallPath = '$CliInstallPath'" -Type "Debug" -Component "Debug"
+  Write-Status -Message "cliRepoName = '$cliRepoName'" -Type "Debug" -Component "Debug"
 
   # Check if already installed
   if ((Test-Path $CliInstallPath) -and -not $Force) {
     $cliExe = Join-Path $CliInstallPath "$cliRepoName.exe"
+    Write-Status -Message "Existing CLI exe path = '$cliExe'" -Type "Debug" -Component "Debug"
     if (Test-Path $cliExe) {
       Write-Status "CLI already installed at: $CliInstallPath" "Success" "CLI"
       return $cliExe
@@ -199,17 +204,19 @@ function Install-ZedCli {
     #   throw "No Windows zip asset found in CLI release"
     # }
 
-    Install-FromZip -DownloadUrl $windowsAsset.browser_download_url -InstallPath $CliInstallPath -TempDir $tempDir -Component "CLI" -ExtractedFolderPattern $cliRepoName -DeleteZipAfterExtraction
+    # Use Install-FromZip utility function
+    $actualInstallPath = Install-FromZip -DownloadUrl $windowsAsset.browser_download_url -InstallPath $CliInstallPath -TempDir $tempDir -Component "CLI" -ExtractedFolderPattern $cliRepoName
 
-    # $downloadUrl = $windowsAsset.browser_download_url
-    # $fileName = $windowsAsset.name
-    # $downloadPath = Join-Path $tempDir $fileName
+    # Debug: Check what Install-FromZip returned and current CliInstallPath
+    Write-Status "DEBUG: Install-FromZip returned: '$actualInstallPath'" "Info" "CLI"
+    Write-Status "DEBUG: Expected CliInstallPath: '$CliInstallPath'" "Info" "CLI"
 
-    # Write-Status "Downloading: $fileName" "Info" "CLI"
-    # Write-Status "From: $downloadUrl" "Info" "CLI"
+    # Use the expected path, not what Install-FromZip returned (in case it's malformed)
+    $finalInstallPath = $CliInstallPath
 
-    # # Download with progress using Get-FileFromWeb
-    # Get-FileFromWeb -URL $downloadUrl -File $downloadPath
+    # Verify installation
+    $cliExePath = Join-Path $finalInstallPath "$cliRepoName.exe"
+    $batPath = Join-Path $finalInstallPath "zed.bat"
 
     # Write-Status "Downloaded: $([math]::Round((Get-Item $downloadPath).Length / 1MB, 2)) MB" "Success" "CLI"
 
@@ -241,6 +248,9 @@ function Install-ZedCli {
     $cliExePath = Join-Path $CliInstallPath "$cliRepoName.exe"
     $batPath = Join-Path $CliInstallPath "zed.bat"
 
+    Write-Status "DEBUG: Final cliExePath = '$cliExePath'" "Info" "CLI"
+    Write-Status "DEBUG: Final batPath = '$batPath'" "Info" "CLI"
+
     if (-not (Test-Path $cliExePath)) {
       throw "CLI executable not found: $cliExePath"
     }
@@ -249,7 +259,7 @@ function Install-ZedCli {
       throw "CLI batch wrapper not found: $batPath"
     }
 
-    Write-Status "Verified CLI installation" "Success" "CLI"
+    Write-Status "Verified CLI installation" "Success" "CLI" -Debug
 
     # Add CLI to PATH
     Write-Status "Adding CLI to PATH..." "Info" "CLI"
@@ -258,7 +268,7 @@ function Install-ZedCli {
     return $cliExePath
   }
   catch {
-    Write-Status "CLI installation failed: $($_.Exception.Message)" "Error" "CLI"
+    Write-Status "CLI installation failed: $($_.Exception.Message)" "Error" "CLI" -Debug
     throw
   }
   finally {
@@ -273,7 +283,7 @@ function Install-ZedCli {
 function Set-ZedCli {
   param([string]$ZedExePath, [string]$CliExePath)
 
-  Write-Status "Configuring zed-cli-win-unofficial..." "Info" "CLI"
+  Write-Status "Configuring zed-cli-win-unofficial..." "Info" "CLI" -Debug
 
   try {
     # Refresh PATH for current session to ensure CLI is available
