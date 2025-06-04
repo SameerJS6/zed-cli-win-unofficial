@@ -1,24 +1,71 @@
-function Write-Status {
-  param([string]$Message, [string]$Type = "Info", [string]$Component = "", [switch]$Debug)
-  $color = switch ($Type) {
-    "Success" { "Green" }
-    "Warning" { "Yellow" }
-    "Error" { "Red" }
-    "Debug" { "Gray" }
-    default { "Cyan" }
-  }
+# Controls whether Write-Debug messages are displayed.
+# Set to $true for verbose debugging output, $false to suppress.
+Write-Host "[utils.ps1] Initial Global:ScriptDebugMode: '$($Global:ScriptDebugMode)' (before setting)" -ForegroundColor Magenta
+if (-not (Test-Path Variable:Global:ScriptDebugMode)) {
+  $Global:ScriptDebugMode = $true
+}
+Write-Host "[utils.ps1] Global:ScriptDebugMode set to: '$($Global:ScriptDebugMode)' (after potential set)" -ForegroundColor Magenta
 
-  $icon = switch ($Component) {
-    "Zed" { "[ZED]" }
-    "CLI" { "[CLI]" }
-    "Debug" { "[DEBUG]" }
-    default { "[INFO]" }
-  }
+function Write-LogInternal {
+  param(
+    [Parameter(Mandatory)]
+    [string]$Message,
+    [Parameter(Mandatory)]
+    [string]$TypePrefix,
+    [Parameter(Mandatory)]
+    [string]$Color
+  )
+  Write-Host "$TypePrefix $Message" -ForegroundColor $Color
+}
 
-  if (-not $Debug) { 
-    Write-Host "$icon $Message" -ForegroundColor $color
+# Logs a message only if $Global:ScriptDebugMode is $true.
+function Write-Debug {
+  param(
+    [Parameter(Mandatory)]
+    [string]$Message
+  )
+  Write-Host "[utils.ps1] Inside Write-Debug, Global:ScriptDebugMode is: '$($Global:ScriptDebugMode)'" -ForegroundColor Magenta
+  if ($Global:ScriptDebugMode) {
+    Write-LogInternal -Message $Message -TypePrefix "[DEBUG]" -Color "Gray"
   }
 }
+
+function Write-Info {
+  param(
+    [Parameter(Mandatory)]
+    [string]$Message
+  )
+  Write-LogInternal -Message $Message -TypePrefix "[INFO]" -Color "Cyan"
+}
+
+# Logs a success message.
+function Write-Success {
+  param(
+    [Parameter(Mandatory)]
+    [string]$Message
+  )
+  Write-LogInternal -Message $Message -TypePrefix "[SUCCESS]" -Color "Green"
+}
+
+# Logs a warning message.
+function Write-Warning {
+  param(
+    [Parameter(Mandatory)]
+    [string]$Message
+  )
+  Write-LogInternal -Message $Message -TypePrefix "[WARNING]" -Color "Yellow"
+}
+
+# Logs an error message.
+function Write-Error {
+  param(
+    [Parameter(Mandatory)]
+    [string]$Message
+  )
+  Write-LogInternal -Message $Message -TypePrefix "[ERROR]" -Color "Red"
+}
+# --- End of Logging Functions ---
+
 
 function Add-ToPath {
   param([string]$Directory)
@@ -28,7 +75,7 @@ function Add-ToPath {
   
   # Check if already in PATH
   if ($currentPath -split ';' | Where-Object { $_ -eq $Directory }) {
-    Write-Status "Directory already in PATH" "Success" 
+    Write-Success "Directory already in PATH: $Directory"
     return $true
   }
 
@@ -37,11 +84,11 @@ function Add-ToPath {
 
   try {
     [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
-    Write-Status "Added to PATH: $Directory" "Success"
+    Write-Success "Added to PATH: $Directory"
     return $true
   }
   catch {
-    Write-Status "Failed to update PATH: $($_.Exception.Message)" "Error" 
+    Write-Error "Failed to update PATH: $($_.Exception.Message)"
     return $false
   }
 }
@@ -55,11 +102,11 @@ function Add-ToPath {
   
 #   try {
 #     [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
-#     Write-Status "Removed from PATH: $Directory" "Success"
+#     Write-Success "Removed from PATH: $Directory"
 #     return $true
 #   }
 #   catch {
-#     Write-Status "Failed to remove from PATH: $($_.Exception.Message)" "Warning"
+#     Write-Warning "Failed to remove from PATH: $($_.Exception.Message)"
 #     return $false
 #   }
 # }
@@ -82,10 +129,10 @@ function Get-LatestRelease {
     [string]$Component
   )
   
-  Write-Status "Fetching latest release information..." "Info" $Component -Debug
+  Write-Info "[$Component] Fetching latest release information..."
   $releaseInfo = Invoke-RestMethod -Uri $ApiUrl -ErrorAction Stop
   $version = $releaseInfo.tag_name
-  Write-Status "Latest version: $version" "Success" $Component -Debug
+  Write-Success "[$Component] Latest version: $version"
   
   return $releaseInfo
 }
@@ -130,31 +177,31 @@ function Install-FromZip {
   $fileName = Split-Path $DownloadUrl -Leaf
   $downloadPath = Join-Path $TempDir $fileName
   
-  Write-Status "Downloading: $fileName" "Info" $Component
-  Write-Status "From: $DownloadUrl" "Info" $Component
+  Write-Info "[$Component] Downloading: $fileName"
+  Write-Info "[$Component] From: $DownloadUrl"
   
   # Download with progress
   Get-FileFromWeb -URL $DownloadUrl -File $downloadPath
   
-  Write-Status "Downloaded: $([math]::Round((Get-Item $downloadPath).Length / 1MB, 2)) MB" "Success" $Component
+  Write-Success "[$Component] Downloaded: $([math]::Round((Get-Item $downloadPath).Length / 1MB, 2)) MB"
   
   # Create installation directory
   if (Test-Path $InstallPath) {
-    Write-Status "Removing existing installation..." "Info" $Component
+    Write-Debug "[$Component] Removing existing installation at $InstallPath..."
     Remove-Item $InstallPath -Recurse -Force
   }
   
   New-Item -ItemType Directory -Path $InstallPath -Force | Out-Null
-  Write-Status "Created installation directory: $InstallPath" "Info" $Component
+  Write-Debug "[$Component] Created installation directory: $InstallPath"
   
   # Extract zip file
-  Write-Status "Extracting archive..." "Info" $Component
+  Write-Debug "[$Component] Extracting archive $fileName..."
   Expand-Archive -Path $downloadPath -DestinationPath $TempDir -Force
   
   # Delete ZIP if requested
   if ($DeleteZipAfterExtraction -and (Test-Path $downloadPath)) {
     Remove-Item $downloadPath -Force
-    Write-Status "Removed downloaded ZIP from temp directory." "Info" $Component
+    Write-Debug "[$Component] Removed downloaded ZIP $fileName from temp directory."
   }
   
   # Find extracted content
@@ -177,8 +224,8 @@ function Install-FromZip {
   }
   
   # Copy contents to installation directory
-  Copy-Item "$sourcePath\*" $InstallPath -Recurse -Force
-  Write-Status "Installed files to: $InstallPath" "Success" $Component
+  Copy-Item "$sourcePath\\*" $InstallPath -Recurse -Force
+  Write-Success "[$Component] Installed files to: $InstallPath"
   
   return $InstallPath
 }
@@ -312,7 +359,7 @@ function Get-FileFromWeb {
   
     catch {
       $ExeptionMsg = $_.Exception.Message
-      Write-Host "Download breaks with error : $ExeptionMsg"
+      Write-Error "Download breaks with error: $ExeptionMsg"
       throw
     }
   

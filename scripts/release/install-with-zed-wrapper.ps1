@@ -20,7 +20,7 @@ try {
   Push-Location $TempInstallerPath
 
   Write-Host "Executing Installation Script..."
-  . "./install-with-zed.ps1"
+  . ".\\install-with-zed.ps1"
 
 }
 catch {
