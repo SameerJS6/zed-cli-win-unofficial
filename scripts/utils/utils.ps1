@@ -1,18 +1,23 @@
 function Write-Status {
-  param([string]$Message, [string]$Type = "Info", [string]$Component = "")
+  param([string]$Message, [string]$Type = "Info", [string]$Component = "", [bool]$Debug = $false)
   $color = switch ($Type) {
     "Success" { "Green" }
     "Warning" { "Yellow" }
     "Error" { "Red" }
+    "Debug" { "Gray" }
     default { "Cyan" }
   }
 
   $icon = switch ($Component) {
     "Zed" { "[ZED]" }
     "CLI" { "[CLI]" }
+    "Debug" { "[DEBUG]" }
     default { "[INFO]" }
   }
-  Write-Host "$icon $Message" -ForegroundColor $color
+
+  if ($Debug) { 
+    Write-Host "$icon $Message" -ForegroundColor $color
+  }
 }
 
 function Add-ToPath {
@@ -23,7 +28,7 @@ function Add-ToPath {
   
   # Check if already in PATH
   if ($currentPath -split ';' | Where-Object { $_ -eq $Directory }) {
-    Write-Status "Directory already in PATH" "Success"
+    Write-Status "Directory already in PATH" "Success" -Debug
     return $true
   }
 
@@ -32,11 +37,11 @@ function Add-ToPath {
 
   try {
     [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
-    Write-Status "Added to PATH: $Directory" "Success"
+    Write-Status "Added to PATH: $Directory" "Success" -Debug
     return $true
   }
   catch {
-    Write-Status "Failed to update PATH: $($_.Exception.Message)" "Error"
+    Write-Status "Failed to update PATH: $($_.Exception.Message)" "Error" -Debug
     return $false
   }
 }
@@ -77,10 +82,10 @@ function Get-LatestRelease {
     [string]$Component
   )
   
-  Write-Status "Fetching latest release information..." "Info" $Component
+  Write-Status "Fetching latest release information..." "Info" $Component -Debug
   $releaseInfo = Invoke-RestMethod -Uri $ApiUrl -ErrorAction Stop
   $version = $releaseInfo.tag_name
-  Write-Status "Latest version: $version" "Success" $Component
+  Write-Status "Latest version: $version" "Success" $Component -Debug
   
   return $releaseInfo
 }
@@ -125,13 +130,13 @@ function Install-FromZip {
   $fileName = Split-Path $DownloadUrl -Leaf
   $downloadPath = Join-Path $TempDir $fileName
   
-  Write-Status "Downloading: $fileName" "Info" $Component
-  Write-Status "From: $DownloadUrl" "Info" $Component
+  Write-Status "Downloading: $fileName" "Info" $Component -Debug
+  Write-Status "From: $DownloadUrl" "Info" $Component -Debug
   
   # Download with progress
   Get-FileFromWeb -URL $DownloadUrl -File $downloadPath
   
-  Write-Status "Downloaded: $([math]::Round((Get-Item $downloadPath).Length / 1MB, 2)) MB" "Success" $Component
+  Write-Status "Downloaded: $([math]::Round((Get-Item $downloadPath).Length / 1MB, 2)) MB" "Success" $Component -Debug
   
   # Create installation directory
   if (Test-Path $InstallPath) {
@@ -143,7 +148,7 @@ function Install-FromZip {
   Write-Status "Created installation directory: $InstallPath" "Info" $Component
   
   # Extract zip file
-  Write-Status "Extracting archive..." "Info" $Component
+  Write-Status "Extracting archive..." "Info" $Component -Debug
   Expand-Archive -Path $downloadPath -DestinationPath $TempDir -Force
   
   # Delete ZIP if requested
@@ -173,7 +178,7 @@ function Install-FromZip {
   
   # Copy contents to installation directory
   Copy-Item "$sourcePath\*" $InstallPath -Recurse -Force
-  Write-Status "Installed files to: $InstallPath" "Success" $Component
+  Write-Status "Installed files to: $InstallPath" "Success" $Component -Debug
   
   return $InstallPath
 }
