@@ -32,16 +32,12 @@ Write-Status "Starting installation of $repoName..."
 # Check if already installed
 if ((Test-Path $InstallPath) -and -not $Force) {
   Write-Status "Already installed at: $InstallPath" "Warning"
-  $choice = Read-Host "Continue anyway? (y/N)"
+  $choice = Read-Host "Continue anyway? (y/n)"
   if ($choice -notmatch '^y(es)?$') {
     Write-Status "Installation cancelled" "Warning"
     exit 0
   }
 }
-
-# Create temp directory
-# $tempDir = Join-Path $env:TEMP "zed-cli-install-$(Get-Random)"
-# New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
 
 $tempDir = New-TempDirectory -Prefix "zed-cli-install"
 
@@ -50,57 +46,7 @@ try {
   $releaseInfo = Get-LatestRelease -ApiUrl $apiUrl -Component "CLI"
   $windowsAsset = Find-WindowsAsset -Assets $releaseInfo.assets -Pattern "x86_64"
   Install-FromZip -DownloadUrl $windowsAsset.browser_download_url -InstallPath $InstallPath -TempDir $tempDir -Component "CLI" -ExtractedFolderPattern $repoName -DeleteZipAfterExtraction 
-  # Write-Status "Fetching latest release information..."
-  # $releaseInfo = Invoke-RestMethod -Uri $apiUrl -ErrorAction Stop
-  # $version = $releaseInfo.tag_name
-  # Write-Status "Latest version: $version" "Success"
-
-  # Find Windows zip asset
-  # $windowsAsset = $releaseInfo.assets | Where-Object {
-  #   $_.name -match "x86_64"
-  # } | Select-Object -First 1
-
-  # if (-not $windowsAsset) {
-  #   throw "No Windows zip asset found in release"
-  # }
-
-  # $downloadUrl = $windowsAsset.browser_download_url
-  # $fileName = $windowsAsset.name
-  # $downloadPath = Join-Path $tempDir $fileName
-
-  # Write-Status "Downloading: $fileName"
-  # Write-Status "From: $downloadUrl"
-
-  # # Download with progress using Get-FileFromWeb
-  # Get-FileFromWeb -URL $downloadUrl -File $downloadPath
-
-  # Write-Status "Downloaded: $([math]::Round((Get-Item $downloadPath).Length / 1MB, 2)) MB" "Success"
-
-  # # Create installation directory
-  # if (Test-Path $InstallPath) {
-  #   Write-Status "Removing existing installation..."
-  #   Remove-FromPath $InstallPath
-  #   Remove-Item $InstallPath -Recurse -Force
-  # }
-
-  # New-Item -ItemType Directory -Path $InstallPath -Force | Out-Null
-  # Write-Status "Created installation directory: $InstallPath"
-
-  # # Extract zip file
-  # Write-Status "Extracting archive..."
-  # Expand-Archive -Path $downloadPath -DestinationPath $tempDir -Force
-
-  # # Find the extracted folder
-  # $extractedFolder = Get-ChildItem $tempDir -Directory | Where-Object { $_.Name -match $repoName } | Select-Object -First 1
-
-  # if (-not $extractedFolder) {
-  #   throw "Could not find extracted folder"
-  # }
-
-  # # Copy contents to installation directory
-  # Copy-Item "$($extractedFolder.FullName)\*" $InstallPath -Recurse -Force
-  # Write-Status "Installed files to: $InstallPath" "Success"
-
+  
   # Verify installation
   $exePath = Join-Path $InstallPath "$repoName.exe"
   $batPath = Join-Path $InstallPath "zed.bat"
@@ -118,8 +64,8 @@ try {
   # Add to PATH
   Write-Status "Adding to PATH..."
   if (Add-ToPath $InstallPath) {
-    Write-Status "Installation completed successfully!" "Success"
-    Write-Status "⚠️  You may need to restart your terminal to use the commands" "Warning"
+    Write-Status "Installation completed successfully!" "Success" -SuppressDebug
+    Write-Status "⚠️  You may need to restart your terminal to use the commands" "Warning" -SuppressDebug
   }
   else {
     Write-Status "Installation completed but PATH update failed" "Warning"

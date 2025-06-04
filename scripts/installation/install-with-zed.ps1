@@ -50,94 +50,14 @@ function Install-ZedEditor {
     }
   }
 
-  # Create temp directory
-  # $tempDir = Join-Path $env:TEMP "zed-install-$(Get-Random)"
-  # New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
-  #  Write-Status "Created temp directory: $tempDir" "Info" "Zed"
  
   $tempDir = New-TempDirectory -Prefix "zed-install"
 
   try {
-    # Get latest release info
-    # Write-Status "Fetching latest Zed release information..." "Info" "Zed"
-    # $releaseInfo = Invoke-RestMethod -Uri $zedApiUrl -ErrorAction Stop
-    # $version = $releaseInfo.tag_name
-    # Write-Status "Latest Zed version: $version" "Success" "Zed"
-
     $releaseInfo = Get-LatestRelease -ApiUrl $zedApiUrl -Component "Zed"
-
-    # Find Windows zip asset (look for x86_64 Windows build)
-    # $windowsAsset = $releaseInfo.assets | Where-Object {
-    #   $_.name -match ".zip$"
-    # } | Select-Object -First 1
-
-    # if (-not $windowsAsset) {
-    #   throw "No Windows x86_64 zip asset found in Zed release"
-    # }
-
     $windowsAsset = Find-WindowsAsset -Assets $releaseInfo.assets -Pattern ".zip"
     Install-FromZip -DownloadUrl $windowsAsset.browser_download_url -InstallPath $ZedInstallPath -TempDir $tempDir -Component "Zed" -DeleteZipAfterExtraction
     
-    # $downloadUrl = $windowsAsset.browser_download_url
-    # $fileName = $windowsAsset.name
-    # $downloadPath = Join-Path $tempDir $fileName
-
-    # Write-Status "Downloading: $fileName" "Info" "Zed"
-    # Write-Status "From: $downloadUrl" "Info" "Zed"
-
-    # # Download with progress using Get-FileFromWeb
-    # Get-FileFromWeb -URL $downloadUrl -File $downloadPath
-
-    # Write-Status "Downloaded: $([math]::Round((Get-Item $downloadPath).Length / 1MB, 2)) MB" "Success" "Zed"
-
-    # # Create installation directory
-    # if (Test-Path $ZedInstallPath) {
-    #   Write-Status "Removing existing Zed installation..." "Info" "Zed"
-    #   Remove-Item $ZedInstallPath -Recurse -Force
-    # }
-
-    # New-Item -ItemType Directory -Path $ZedInstallPath -Force | Out-Null
-    # Write-Status "Created Zed installation directory: $ZedInstallPath" "Info" "Zed"
-
-    # # Extract zip file
-    # Write-Status "Extracting Zed archive..." "Info" "Zed"
-    # Expand-Archive -Path $downloadPath -DestinationPath $tempDir -Force
-
-    # # Explicitly delete the downloaded ZIP from the temp directory before copying
-    # if (Test-Path $downloadPath) {
-    #   Remove-Item $downloadPath -Force
-    #   Write-Status "Removed downloaded Zed ZIP from temp directory." "Info" "Zed"
-    # }
-
-    # # Find the extracted content and copy to installation directory
-    # $extractedItems = Get-ChildItem $tempDir # No longer need -Exclude "*.zip" as it's deleted
-
-    # # Look for zed.exe in extracted content
-    # $zedExeFound = $null
-    # foreach ($item in $extractedItems) {
-    #   if ($item.PSIsContainer) {
-    #     $zedExePath = Join-Path $item.FullName "zed.exe"
-    #     if (Test-Path $zedExePath) {
-    #       $zedExeFound = $item.FullName
-    #       break
-    #     }
-    #   }
-    #   else {
-    #     if ($item.Name -eq "zed.exe") {
-    #       $zedExeFound = $tempDir
-    #       break
-    #     }
-    #   }
-    # }
-
-    # if (-not $zedExeFound) {
-    #   throw "Could not find zed.exe in extracted archive"
-    # }
-
-    # # Copy contents to installation directory
-    # Copy-Item "$zedExeFound\*" $ZedInstallPath -Recurse -Force
-    # Write-Status "Installed Zed files to: $ZedInstallPath" "Success" "Zed"
-
     # Verify installation
     $zedExePath = Join-Path $ZedInstallPath "zed.exe"
     if (-not (Test-Path $zedExePath)) {
@@ -165,51 +85,28 @@ function Install-ZedCli {
   Write-Status "Starting zed-cli-win-unofficial installation..." "Info" "CLI"
 
   # Debug: Show initial paths
-  Write-Status -Message "CliInstallPath = '$CliInstallPath'" -Type "Debug" -Component "Debug"
-  Write-Status -Message "cliRepoName = '$cliRepoName'" -Type "Debug" -Component "Debug"
+  Write-Status "CliInstallPath = '$CliInstallPath'" "Debug" "Debug" -Debug
+  Write-Status "cliRepoName = '$cliRepoName'" "Debug" "Debug" -Debug
 
   # Check if already installed
   if ((Test-Path $CliInstallPath) -and -not $Force) {
     $cliExe = Join-Path $CliInstallPath "$cliRepoName.exe"
-    Write-Status -Message "Existing CLI exe path = '$cliExe'" -Type "Debug" -Component "Debug"
+    Write-Status "Existing CLI exe path = '$cliExe'" "Debug" "Debug" -Debug
     if (Test-Path $cliExe) {
       Write-Status "CLI already installed at: $CliInstallPath" "Success" "CLI"
       return $cliExe
     }
   }
 
-  # Create temp directory
-  # $tempDir = Join-Path $env:TEMP "zed-cli-install-$(Get-Random)"
-  # New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
-  # Write-Status "Created temp directory: $tempDir" "Info" "CLI"
-
   $tempDir = New-TempDirectory -Prefix "zed-cli-install"
 
   try {
-    # Get latest release info
-    # Write-Status "Fetching latest CLI release information..." "Info" "CLI"
-    # $releaseInfo = Invoke-RestMethod -Uri $cliApiUrl -ErrorAction Stop
-    # $version = $releaseInfo.tag_name
-    # Write-Status "Latest CLI version: $version" "Success" "CLI"
-
     $releaseInfo = Get-LatestRelease -ApiUrl $cliApiUrl -Component "CLI"
-
     $windowsAsset = Find-WindowsAsset -Assets $releaseInfo.assets -Pattern "x86_64"
-    # Find Windows zip asset
-    # $windowsAsset = $releaseInfo.assets | Where-Object {
-    #   $_.name -match "x86_64"
-    # } | Select-Object -First 1
-
-    # if (-not $windowsAsset) {
-    #   throw "No Windows zip asset found in CLI release"
-    # }
-
-    # Use Install-FromZip utility function
     $actualInstallPath = Install-FromZip -DownloadUrl $windowsAsset.browser_download_url -InstallPath $CliInstallPath -TempDir $tempDir -Component "CLI" -ExtractedFolderPattern $cliRepoName
 
-    # Debug: Check what Install-FromZip returned and current CliInstallPath
-    Write-Status "DEBUG: Install-FromZip returned: '$actualInstallPath'" "Info" "CLI"
-    Write-Status "DEBUG: Expected CliInstallPath: '$CliInstallPath'" "Info" "CLI"
+    Write-Status "Install-FromZip returned: '$actualInstallPath'" "Debug" "Debug" 
+    Write-Status "Expected CliInstallPath: '$CliInstallPath'" "Debug" "Debug" 
 
     # Use the expected path, not what Install-FromZip returned (in case it's malformed)
     $finalInstallPath = $CliInstallPath
@@ -218,38 +115,12 @@ function Install-ZedCli {
     $cliExePath = Join-Path $finalInstallPath "$cliRepoName.exe"
     $batPath = Join-Path $finalInstallPath "zed.bat"
 
-    # Write-Status "Downloaded: $([math]::Round((Get-Item $downloadPath).Length / 1MB, 2)) MB" "Success" "CLI"
-
-    # # Create installation directory
-    # if (Test-Path $CliInstallPath) {
-    #   Write-Status "Removing existing CLI installation..." "Info" "CLI"
-    #   Remove-Item $CliInstallPath -Recurse -Force
-    # }
-
-    # New-Item -ItemType Directory -Path $CliInstallPath -Force | Out-Null
-    # Write-Status "Created CLI installation directory: $CliInstallPath" "Info" "CLI"
-
-    # # Extract zip file
-    # Write-Status "Extracting CLI archive..." "Info" "CLI"
-    # Expand-Archive -Path $downloadPath -DestinationPath $tempDir -Force
-
-    # # Find the extracted folder
-    # $extractedFolder = Get-ChildItem $tempDir -Directory | Where-Object { $_.Name -match $cliRepoName } | Select-Object -First 1
-
-    # if (-not $extractedFolder) {
-    #   throw "Could not find extracted CLI folder"
-    # }
-
-    # # Copy contents to installation directory
-    # Copy-Item "$($extractedFolder.FullName)\*" $CliInstallPath -Recurse -Force
-    # Write-Status "Installed CLI files to: $CliInstallPath" "Success" "CLI"
-
     # Verify installation
     $cliExePath = Join-Path $CliInstallPath "$cliRepoName.exe"
     $batPath = Join-Path $CliInstallPath "zed.bat"
 
-    Write-Status "DEBUG: Final cliExePath = '$cliExePath'" "Info" "CLI"
-    Write-Status "DEBUG: Final batPath = '$batPath'" "Info" "CLI"
+    Write-Status "Final cliExePath = '$cliExePath'" "Debug" "Debug" -Debug
+    Write-Status "Final batPath = '$batPath'" "Debug" "Debug" -Debug
 
     if (-not (Test-Path $cliExePath)) {
       throw "CLI executable not found: $cliExePath"
@@ -329,23 +200,6 @@ function Set-ZedCli {
       }
     }
     
-    # Approach 3: Change directory and run locally
-    if (-not $configSuccess) {
-      try {
-        Write-Status "Attempting configuration from CLI directory..." "Info" "CLI"
-        Push-Location $cliDir
-        $configResult = & ".\$cliExeName" "config" "set" "$ZedExePath" 2>&1
-        if ($LASTEXITCODE -eq 0) {
-          $configSuccess = $true
-          Write-Status "Configuration successful from CLI directory" "Success" "CLI"
-        }
-        Pop-Location
-      }
-      catch {
-        if (Get-Location) { Pop-Location }
-        Write-Status "Local directory approach failed: $($_.Exception.Message)" "Warning" "CLI"
-      }
-    }
     
     if ($configSuccess) {
       Write-Status "CLI successfully configured with Zed path" "Success" "CLI"
