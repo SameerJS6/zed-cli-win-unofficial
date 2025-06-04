@@ -1,14 +1,11 @@
-# --- Start of Logging Functions ---
 # Controls whether Write-Debug messages are displayed.
 # Set to $true for verbose debugging output, $false to suppress.
-# Example: $Global:ScriptDebugMode = $true
 Write-Host "[utils.ps1] Initial Global:ScriptDebugMode: '$($Global:ScriptDebugMode)' (before setting)" -ForegroundColor Magenta
 if (-not (Test-Path Variable:Global:ScriptDebugMode)) {
   $Global:ScriptDebugMode = $true
 }
 Write-Host "[utils.ps1] Global:ScriptDebugMode set to: '$($Global:ScriptDebugMode)' (after potential set)" -ForegroundColor Magenta
 
-# Internal function to handle actual writing to host with prefixes and colors.
 function Write-LogInternal {
   param(
     [Parameter(Mandatory)]
@@ -33,7 +30,6 @@ function Write-Debug {
   }
 }
 
-# Logs an informational message.
 function Write-Info {
   param(
     [Parameter(Mandatory)]
@@ -70,46 +66,6 @@ function Write-Error {
 }
 # --- End of Logging Functions ---
 
-# function Write-Status {
-#   param(
-#     [Parameter(Mandatory)]
-#     [string]$Message, 
-    
-#     [string]$Type = "Info", 
-    
-#     [string]$Component = "", 
-    
-#     [switch]$SuppressDebug
-#   )
-  
-#   # Define colors for different message types
-#   $color = switch ($Type) {
-#     "Success" { "Green" }
-#     "Warning" { "Yellow" }
-#     "Error" { "Red" }
-#     "Debug" { "Gray" }
-#     default { "Cyan" }
-#   }
-
-#   # Define icons based on component
-#   $icon = switch ($Component) {
-#     "Zed" { "[ZED]" }
-#     "CLI" { "[CLI]" }
-#     default { "[INFO]" }
-#   }
-  
-#   # Override icon for Debug type messages
-#   if ($Type -eq "Debug") {S
-#     $icon = "[DEBUG]"
-#   }
-
-#   # Only suppress output if it's a Debug type message AND SuppressDebug is specified
-#   $shouldSuppress = ($Type -eq "Debug") -and $SuppressDebug
-  
-#   if (-not $shouldSuppress) {
-#     Write-Host "$icon $Message" -ForegroundColor $color
-#   }
-# }
 
 function Add-ToPath {
   param([string]$Directory)
