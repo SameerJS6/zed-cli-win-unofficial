@@ -1,5 +1,5 @@
 function Write-Status {
-  param([string]$Message, [string]$Type = "Info", [string]$Component = "", [bool]$Debug = $false)
+  param([string]$Message, [string]$Type = "Info", [string]$Component = "", [bool]$Debug = $true)
   $color = switch ($Type) {
     "Success" { "Green" }
     "Warning" { "Yellow" }
