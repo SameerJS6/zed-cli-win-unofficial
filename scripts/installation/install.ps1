@@ -17,7 +17,7 @@ param(
 $Global:ScriptDebugMode = $false
 
 # Import all helper functions
-. "$PSScriptRoot\..\utils\utils.ps1"
+. "./utils.ps1"
 
 # Configuration
 $repoOwner = "SameerJS6"

@@ -22,8 +22,6 @@ $Global:ScriptDebugMode = $true
 # Import all helper functions
 . "./utils.ps1"
 
-# . "$PSScriptRoot\..\utils\utils.ps1"
-
 # Configuration
 $zedRepoOwner = "pirafrank"
 $zedRepoName = "zed_unofficial_win_builds"
