@@ -276,28 +276,81 @@ function Set-ZedCli {
   Write-Status "Configuring zed-cli-win-unofficial..." "Info" "CLI"
 
   try {
-    # Test if CLI is working
-    # $testResult = & $CliExePath "--version" 2>&1
-    if ($LASTEXITCODE -ne 0) {
-      Write-Status "CLI test failed, trying alternative approach..." "Warning" "CLI"
+    # Refresh PATH for current session to ensure CLI is available
+    Write-Status "Refreshing PATH environment variable..." "Info" "CLI"
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    
+    # Get the CLI directory for execution
+    $cliDir = Split-Path $CliExePath -Parent
+    $cliExeName = Split-Path $CliExePath -Leaf
+    
+    Write-Status "CLI executable: $cliExeName" "Info" "CLI"
+    Write-Status "CLI directory: $cliDir" "Info" "CLI"
+    Write-Status "Zed path to configure: $ZedExePath" "Info" "CLI"
+    
+    # Try multiple approaches to run the CLI command
+    $configSuccess = $false
+    
+    # Approach 1: Use full path with & operator
+    try {
+      Write-Status "Attempting configuration with full path..." "Info" "CLI"
+      $configResult = & "$CliExePath" "config" "set" "$ZedExePath" 2>&1
+      if ($LASTEXITCODE -eq 0) {
+        $configSuccess = $true
+        Write-Status "Configuration successful using full path" "Success" "CLI"
+      }
     }
-
-    # Configure CLI to use Zed installation
-    $configResult = & $CliExePath "config" "set" "`"$ZedExePath`"" 2>&1
-
-    if ($LASTEXITCODE -eq 0) {
-      Write-Status "Successfully configured CLI with Zed path" "Success" "CLI"
+    catch {
+      Write-Status "Full path approach failed: $($_.Exception.Message)" "Warning" "CLI"
+    }
+    
+    # Approach 2: Try using just the executable name (if it's in PATH)
+    if (-not $configSuccess) {
+      try {
+        Write-Status "Attempting configuration using PATH..." "Info" "CLI"
+        $configResult = & "$cliExeName" "config" "set" "$ZedExePath" 2>&1
+        if ($LASTEXITCODE -eq 0) {
+          $configSuccess = $true
+          Write-Status "Configuration successful using PATH" "Success" "CLI"
+        }
+      }
+      catch {
+        Write-Status "PATH approach failed: $($_.Exception.Message)" "Warning" "CLI"
+      }
+    }
+    
+    # Approach 3: Change directory and run locally
+    if (-not $configSuccess) {
+      try {
+        Write-Status "Attempting configuration from CLI directory..." "Info" "CLI"
+        Push-Location $cliDir
+        $configResult = & ".\$cliExeName" "config" "set" "$ZedExePath" 2>&1
+        if ($LASTEXITCODE -eq 0) {
+          $configSuccess = $true
+          Write-Status "Configuration successful from CLI directory" "Success" "CLI"
+        }
+        Pop-Location
+      }
+      catch {
+        if (Get-Location) { Pop-Location }
+        Write-Status "Local directory approach failed: $($_.Exception.Message)" "Warning" "CLI"
+      }
+    }
+    
+    if ($configSuccess) {
+      Write-Status "CLI successfully configured with Zed path" "Success" "CLI"
+      return $true
     }
     else {
-      Write-Status "Configuration command completed with code: $LASTEXITCODE" "Warning" "CLI"
+      Write-Status "All configuration attempts failed" "Error" "CLI"
       Write-Status "Output: $configResult" "Info" "CLI"
+      Write-Status "Exit code: $LASTEXITCODE" "Info" "CLI"
+      return $false
     }
-
-    return $true
   }
   catch {
     Write-Status "Configuration failed: $($_.Exception.Message)" "Error" "CLI"
-    Write-Status "You may need to run manually: zed-cli-win-unofficial config set `"$ZedExePath`"" "Warning" "CLI"
+    Write-Status "You may need to run manually: $cliExeName config set `"$ZedExePath`"" "Warning" "CLI"
     return $false
   }
 }
@@ -339,19 +392,26 @@ try {
   $cliExePath = Install-ZedCli
   Write-Status "✅ CLI installation completed" "Success" "CLI"
 
-
-  Write-Status "Refreshing PATH environment variable for current session..." "Info" "CLI"
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-
   # Configure CLI if we have both components
   if ($zedExePath -and $cliExePath) {
-    $configSuccess = Set-ZedCli -ZedExePath $zedExePath -CliExePath $cliExePath
-    if ($configSuccess) {
-      Write-Status "✅ Configuration completed" "Success" "CLI"
+    # Verify CLI executable exists before configuration
+    if (Test-Path $cliExePath) {
+      Write-Status "Configuring CLI to use Zed installation..." "Info" "CLI"
+      $configSuccess = Set-ZedCli -ZedExePath $zedExePath -CliExePath $cliExePath
+      if ($configSuccess) {
+        Write-Status "✅ Configuration completed" "Success" "CLI"
+      }
+      else {
+        Write-Status "⚠️  Configuration failed - manual setup may be required" "Warning" "CLI"
+      }
+    }
+    else {
+      Write-Status "CLI executable not found at: $cliExePath" "Error" "CLI"
+      Write-Status "⚠️  Configuration skipped - manual setup required" "Warning" "CLI"
     }
   }
   else {
-    Write-Status "⚠️  Configuration skipped - manual setup may be required" "Warning" "CLI"
+    Write-Status "⚠️  Configuration skipped - missing components" "Warning" "CLI"
   }
 
   # Success summary
