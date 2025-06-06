@@ -6,6 +6,7 @@ import (
 	"os"
 	"zed-cli-win-unofficial/internal/config"
 	"zed-cli-win-unofficial/internal/process"
+	"zed-cli-win-unofficial/internal/telementry"
 	"zed-cli-win-unofficial/internal/utils"
 
 	"github.com/urfave/cli/v3"
@@ -45,6 +46,10 @@ func Execute(ctx context.Context) error {
 				utils.PrintZedNotFoundBanner("")
 				utils.Error(fmt.Sprintf("Error loading config: %v", err))
 				utils.Infoln("👉 Tip: Run `zed config set <path>` to configure the Zed executable path.")
+				telementry.TrackEvent("config_load_error", map[string]any{
+					"error_type":    "file_not_found",
+					"config_exists": false,
+				})
 				return nil
 			}
 
@@ -52,10 +57,19 @@ func Execute(ctx context.Context) error {
 				utils.PrintZedNotFoundBanner("")
 				utils.Error(fmt.Sprintf("Configured Zed path does not exist: %s", cfg.ZedPath))
 				utils.Infoln("👉 Tip: Run `zed config set <path>` to update the path.")
+				telementry.TrackEvent("configured_path_not_found", map[string]any{
+					"error_type":    "invalid_configured_path",
+					"config_exists": true,
+				})
+
 				return nil
 			}
 
 			projectPath := cmd.Args().First()
+			telementry.TrackEvent("zed_launched", map[string]any{
+				"has_project_path": projectPath != "",
+				"args_count":       cmd.Args().Len(),
+			})
 			return process.LaunchZed(cfg.ZedPath, projectPath)
 		},
 	}

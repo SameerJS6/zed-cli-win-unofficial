@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"zed-cli-win-unofficial/internal/telementry"
 	"zed-cli-win-unofficial/internal/utils"
 )
 
@@ -51,11 +52,17 @@ func LoadConfig() (*Config, error) {
 	configPath := ConfigPath()
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		telementry.TrackEvent("config_file_not_found_error", map[string]any{
+			"error_type": "config_file_not_found",
+		})
 		return nil, fmt.Errorf("config file not found: %w", err)
 	}
 
 	file, err := os.Open(configPath)
 	if err != nil {
+		telementry.TrackEvent("config_file_not_found_error", map[string]any{
+			"error_type": "config_file_not_found",
+		})
 		return nil, fmt.Errorf("unable to open config file: %w", err)
 	}
 
@@ -63,7 +70,11 @@ func LoadConfig() (*Config, error) {
 
 	var config Config
 	if err := json.NewDecoder(file).Decode(&config); os.IsNotExist(err) {
+		telementry.TrackEvent("config_file_decode_error", map[string]any{
+			"error_type": "config_file_decode_error",
+		})
 		return nil, fmt.Errorf("unable to read config file: %w", err)
 	}
+
 	return &config, nil
 }

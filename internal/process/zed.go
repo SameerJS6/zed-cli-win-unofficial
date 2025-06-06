@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"zed-cli-win-unofficial/internal/telementry"
 	"zed-cli-win-unofficial/internal/utils"
 
 	"github.com/bi-zone/go-fileversion"
@@ -46,8 +47,14 @@ func LaunchZed(zedPath string, projectPath string) error {
 	zedVersion, err := GetZedVersion(zedPath)
 
 	if err != nil {
+		telementry.TrackEvent("zed_version_error", map[string]any{
+			"error_type": "version_read_failed",
+		})
 		utils.Warning("Could not determine Zed version: " + err.Error())
 	} else {
+		telementry.TrackEvent("zed_version_found", map[string]any{
+			"zed_version": zedVersion.String(),
+		})
 		utils.Debugln(fmt.Sprintf("Current Zed version: %s", zedVersion.String()))
 	}
 
@@ -63,6 +70,11 @@ func LaunchZed(zedPath string, projectPath string) error {
 			utils.Info("Solutions:\n")
 			utils.Info(" 1. Update Zed to the latest version (recommended)\n")
 			utils.Info(" 2. Close the existing Zed window and try again\n")
+			telementry.TrackEvent("zed_minimum_version_error", map[string]any{
+				"error_type":       "version_too_old",
+				"current_version":  zedVersion.String(),
+				"required_version": MIN_ZED_VERSION,
+			})
 			return nil
 		}
 	}
@@ -70,9 +82,15 @@ func LaunchZed(zedPath string, projectPath string) error {
 	if projectPath != "" {
 		if _, err := os.Stat(projectPath); os.IsNotExist(err) {
 			if err := os.MkdirAll(projectPath, 0755); err != nil {
+				telementry.TrackEvent("project_folder_creation_error", map[string]any{
+					"error_type": "folder_creation_failed",
+				})
 				return fmt.Errorf("unable to create project folder: %w", err)
 			}
 
+			telementry.TrackEvent("project_folder_created", map[string]any{
+				"created_new_folder": true,
+			})
 			utils.Error("Path doesn't exists")
 			utils.Info("📁 Created new folder: %s\n", filepath.Clean(projectPath))
 		}
@@ -91,5 +109,10 @@ func LaunchZed(zedPath string, projectPath string) error {
 	}
 
 	utils.Success("Zed opened successfully!!")
+	telementry.TrackEvent("zed_launched", map[string]any{
+		"has_project_path": projectPath != "",
+		"zed_was_running":  isRunning,
+		"zed_version":      zedVersion.String(),
+	})
 	return nil
 }
