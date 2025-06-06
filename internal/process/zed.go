@@ -65,11 +65,11 @@ func LaunchZed(zedPath string, projectPath string) error {
 		// We only block if we could successfully get the version and it matches the constraint.
 		if constraint.Check(zedVersion) {
 			utils.PrintUpgradeRequiredBanner(MIN_ZED_VERSION)
-			fmt.Printf("Your current Zed version: v%s\n", zedVersion.String())
-			utils.Info("This CLI feature requires Zed v%s or newer when Zed is already running.\n", MIN_ZED_VERSION)
-			utils.Info("Solutions:\n")
-			utils.Info(" 1. Update Zed to the latest version (recommended)\n")
-			utils.Info(" 2. Close the existing Zed window and try again\n")
+			utils.Info("📦 Your current Zed version: v%s\n", zedVersion.String())
+			utils.Info("⚠️ This CLI feature requires Zed v%s or newer when Zed is already running.\n", MIN_ZED_VERSION)
+			utils.Info("💡 Solutions:\n")
+			utils.Info("  1. Update Zed to the latest version (recommended)\n")
+			utils.Info("  2. Close the existing Zed window and try again\n")
 			telementry.TrackEvent("zed_minimum_version_error", map[string]any{
 				"error_type":       "version_too_old",
 				"current_version":  zedVersion.String(),
