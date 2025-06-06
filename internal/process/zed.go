@@ -29,7 +29,7 @@ func GetZedVersion(zedPath string) (*version.Version, error) {
 
 // isZedRunning checks if the Zed is currently running.
 func isZedRunning() (bool, error) {
-	cmd := exec.Command("powershell", "-NoLogo", "-NoProfile", "-Command", "Get-Process Zed-v.176 -ErrorAction SilentlyContinue")
+	cmd := exec.Command("powershell", "-NoLogo", "-NoProfile", "-Command", "Get-Process Zed -ErrorAction SilentlyContinue")
 	output, err := cmd.Output()
 
 	if err == nil && len(output) > 0 {
