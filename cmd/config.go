@@ -43,7 +43,7 @@ func configCommand() *cli.Command {
 					}
 
 					utils.Success(fmt.Sprintf("Zed path configured: %s", resolvedPath))
-					utils.Infoln("💡 You may want to run `zed context install` to set up context menus.")
+					utils.Infoln("💡 You may want to run `zed context install` to set up or update context menus.")
 					return nil
 				},
 			},
