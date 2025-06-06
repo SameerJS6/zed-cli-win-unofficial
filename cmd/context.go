@@ -14,8 +14,9 @@ import (
 
 func contextCommand() *cli.Command {
 	return &cli.Command{
-		Name:  "context",
-		Usage: "Configure the `Open with Zed` in context menu",
+		Name:        "context",
+		Usage:       "Configure the `Open with Zed` in context menu",
+		Description: "Install or uninstall the `Open with Zed` context menu option and file associations.",
 		Commands: []*cli.Command{
 			{
 				Name:  "install",
