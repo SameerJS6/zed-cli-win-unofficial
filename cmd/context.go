@@ -69,6 +69,7 @@ func contextCommand() *cli.Command {
 						return nil
 					}
 
+					utils.PrintContextInstallBanner()
 					utils.Success("Zed context menu and file associations setup complete!")
 					utils.Infoln("💡 Optional: Restart Explorer—rarely necessary for current user changes.")
 					utils.Infoln("🔧 To remove these entries, run: zed context uninstall")
@@ -90,7 +91,8 @@ func contextCommand() *cli.Command {
 					}
 
 					if !cfg.ContextMenuEnabled {
-						utils.Infoln("ℹ️  Zed context menu is not installed. Nothing to remove.")
+						utils.PrintContextNotInstalledBanner()
+						utils.Infoln("Zed context menu is not installed. Nothing to remove.")
 						return nil
 					}
 
@@ -109,6 +111,7 @@ func contextCommand() *cli.Command {
 						return nil
 					}
 
+					utils.PrintContextUninstallBanner()
 					utils.Success("Zed context menu and file associations removed successfully.")
 					utils.Infoln("💡 Optional: Restart Explorer—rarely necessary for current user changes.")
 
