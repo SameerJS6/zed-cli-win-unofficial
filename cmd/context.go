@@ -14,8 +14,9 @@ import (
 
 func contextCommand() *cli.Command {
 	return &cli.Command{
-		Name:  "context",
-		Usage: "Configure the `Open with Zed` in context menu",
+		Name:        "context",
+		Usage:       "Configure the `Open with Zed` in context menu",
+		Description: "Install or uninstall the `Open with Zed` context menu option and file associations.",
 		Commands: []*cli.Command{
 			{
 				Name:  "install",
@@ -69,6 +70,7 @@ func contextCommand() *cli.Command {
 						return nil
 					}
 
+					utils.PrintContextInstallBanner()
 					utils.Success("Zed context menu and file associations setup complete!")
 					utils.Infoln("💡 Optional: Restart Explorer—rarely necessary for current user changes.")
 					utils.Infoln("🔧 To remove these entries, run: zed context uninstall")
@@ -90,7 +92,8 @@ func contextCommand() *cli.Command {
 					}
 
 					if !cfg.ContextMenuEnabled {
-						utils.Infoln("ℹ️  Zed context menu is not installed. Nothing to remove.")
+						utils.PrintContextNotInstalledBanner()
+						utils.Infoln("ℹ️ Zed context menu is not installed. Nothing to remove.")
 						return nil
 					}
 
@@ -109,6 +112,7 @@ func contextCommand() *cli.Command {
 						return nil
 					}
 
+					utils.PrintContextUninstallBanner()
 					utils.Success("Zed context menu and file associations removed successfully.")
 					utils.Infoln("💡 Optional: Restart Explorer—rarely necessary for current user changes.")
 
