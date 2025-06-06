@@ -27,6 +27,7 @@ func configCommand() *cli.Command {
 
 					resolvedPath, err := config.ValidatePath(path)
 					if err != nil {
+						utils.PrintInvalidPathBanner()
 						utils.Error(fmt.Sprintf("Invalid path: %v", err))
 						return nil
 					}
