@@ -11,6 +11,8 @@ import (
 	"github.com/hashicorp/go-version"
 )
 
+const MIN_ZED_VERSION string = "0.177.0"
+
 // GetZedVersion retrieves the version of the Zed executable
 func GetZedVersion(zedPath string) (*version.Version, error) {
 	info, err := fileversion.New(zedPath)
@@ -50,29 +52,20 @@ func LaunchZed(zedPath string, projectPath string) error {
 	}
 
 	if isRunning {
-		// Constraint for checking old versions of Zed.
-		// Versions less than 0.177.0 cannot open a new project from the CLI if Zed is already running.
-
-		constraint, _ := version.NewConstraint("< 0.177.0")
+		constraint, _ := version.NewConstraint("< " + MIN_ZED_VERSION)
 		utils.Debugln(fmt.Sprintf("Constraint Checking is %t\n", constraint.Check(zedVersion)))
 
 		// We only block if we could successfully get the version and it matches the constraint.
 		if constraint.Check(zedVersion) {
-			utils.PrintUpgradeRequiredBanner()
-			utils.Warning(fmt.Sprintf("Your current Zed version: v%s", zedVersion.String()))
-			utils.Info("This CLI feature requires Zed v0.177.0 or newer when Zed is already running.\n")
-			utils.Info("💡 Solutions:\n")
-			utils.Info("   1. Update Zed to the latest version (recommended)\n")
-			utils.Info("   2. Close the existing Zed window and try again\n")
+			utils.PrintUpgradeRequiredBanner(MIN_ZED_VERSION)
+			fmt.Printf("Your current Zed version: v%s\n", zedVersion.String())
+			utils.Info(fmt.Sprintf("This CLI feature requires Zed v%s or newer when Zed is already running.\n", MIN_ZED_VERSION))
+			utils.Info("Solutions:\n")
+			utils.Info(" 1. Update Zed to the latest version (recommended)\n")
+			utils.Info(" 2. Close the existing Zed window and try again\n")
 			return nil
 		}
 	}
-
-	// if isRunning {
-	// 	utils.Error("Zed is already running in another instance!!")
-	// 	utils.Warning("This CLI cannot launch a second instance due to Zed's limitation")
-	// 	return nil
-	// }
 
 	if projectPath != "" {
 		if _, err := os.Stat(projectPath); os.IsNotExist(err) {
