@@ -40,12 +40,14 @@ func Execute(ctx context.Context) error {
 
 			cfg, err := config.LoadConfig()
 			if err != nil {
+				utils.PrintZedNotFoundBanner("")
 				utils.Error(fmt.Sprintf("Error loading config: %v", err))
 				utils.Infoln("👉 Tip: Run `zed config set <path>` to configure the Zed executable path.")
 				return nil
 			}
 
 			if !config.FileExists(cfg.ZedPath) {
+				utils.PrintZedNotFoundBanner("")
 				utils.Error(fmt.Sprintf("Configured Zed path does not exist: %s", cfg.ZedPath))
 				utils.Infoln("👉 Tip: Run `zed config set <path>` to update the path.")
 				return nil
