@@ -238,12 +238,12 @@ func Debugln(message string) {
 
 // Info prints important user-facing messages (always shown)
 func Info(format string, args ...interface{}) {
-	fmt.Printf("ℹ️ "+format, args...)
+	fmt.Printf(format, args...)
 }
 
 // Infoln prints important user-facing messages with newline (always shown)
 func Infoln(message string) {
-	fmt.Println("ℹ️ " + message)
+	fmt.Println(message)
 }
 
 // Success prints success messages (always shown)
