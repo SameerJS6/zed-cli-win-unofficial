@@ -92,7 +92,7 @@ func contextCommand() *cli.Command {
 
 					if !cfg.ContextMenuEnabled {
 						utils.PrintContextNotInstalledBanner()
-						utils.Infoln("Zed context menu is not installed. Nothing to remove.")
+						utils.Infoln("ℹ️ Zed context menu is not installed. Nothing to remove.")
 						return nil
 					}
 
