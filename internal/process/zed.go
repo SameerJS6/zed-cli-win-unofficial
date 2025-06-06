@@ -46,7 +46,7 @@ func LaunchZed(zedPath string, projectPath string) error {
 	zedVersion, err := GetZedVersion(zedPath)
 
 	if err != nil {
-		utils.Warning(fmt.Sprintf("Could not determine Zed version: %v", err))
+		utils.Warning("Could not determine Zed version: " + err.Error())
 	} else {
 		utils.Debugln(fmt.Sprintf("Current Zed version: %s", zedVersion.String()))
 	}
@@ -59,7 +59,7 @@ func LaunchZed(zedPath string, projectPath string) error {
 		if constraint.Check(zedVersion) {
 			utils.PrintUpgradeRequiredBanner(MIN_ZED_VERSION)
 			fmt.Printf("Your current Zed version: v%s\n", zedVersion.String())
-			utils.Info(fmt.Sprintf("This CLI feature requires Zed v%s or newer when Zed is already running.\n", MIN_ZED_VERSION))
+			utils.Info("This CLI feature requires Zed v%s or newer when Zed is already running.\n", MIN_ZED_VERSION)
 			utils.Info("Solutions:\n")
 			utils.Info(" 1. Update Zed to the latest version (recommended)\n")
 			utils.Info(" 2. Close the existing Zed window and try again\n")
