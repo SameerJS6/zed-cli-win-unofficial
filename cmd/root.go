@@ -12,32 +12,34 @@ import (
 )
 
 func Execute(ctx context.Context) error {
+	cli.VersionPrinter = func(cmd *cli.Command) {
+		fmt.Println("v1.0.0")
+	}
+
+	cli.RootCommandHelpTemplate = fmt.Sprintf(`%s
+	WEBSITE: https://zedcli.sameerjs.com,
+	SUPPORT: https://github.com/SameerJS6/zed-cli-win-unofficial/issues`, cli.RootCommandHelpTemplate)
+
 	app := &cli.Command{
-		Name:  "zed",
-		Usage: "Zed's Unofficial Windows CLI",
-		Flags: []cli.Flag{
-			&cli.BoolFlag{
-				Name:    "version",
-				Aliases: []string{"v"},
-				Usage:   "Print the version of Zed CLI",
-				Action: func(ctx context.Context, cmd *cli.Command, value bool) error {
-					if value {
-						utils.Infoln("v1.0.0")
-						return nil
-					}
-					return nil
-				},
-			},
+		Name:        "zed",
+		Usage:       "Zed's Unofficial Windows CLI",
+		Description: "An unofficial Windows command-line interface for the Zed editor. Launch Zed projects, manage configuration, and install context menu integration.",
+		Version:     "1.0.0",
+		Authors: []any{
+			"SameerJS6 <contact@sameerjs.com>",
 		},
+		Copyright:   "Copyright (c) 2025 SameerJS6",
+		ArgsUsage:   "[project-path]",
+		UsageText:   "zed [global options] [project-path]\n   zed [global options] command [command options] [arguments...]",
+		Category:    "Development Tools",
+		Suggest:     true,
+		HideHelp:    false,
+		HideVersion: false,
 		Commands: []*cli.Command{
 			configCommand(),
 			contextCommand(),
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
-			if cmd.Bool("version") {
-				return nil // Early exit for version flag
-			}
-
 			cfg, err := config.LoadConfig()
 			if err != nil {
 				utils.PrintZedNotFoundBanner("")
