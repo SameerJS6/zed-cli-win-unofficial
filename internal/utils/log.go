@@ -34,11 +34,11 @@ func PrintTitle() {
 }
 
 // PrintUpgradeRequiredBanner prints ASCII art for version upgrade requirement
-func PrintUpgradeRequiredBanner() {
+func PrintUpgradeRequiredBanner(minVersion string) {
 	// ANSI escape codes for bold yellow text (warning color)
 	yellowBold := "\033[1;33m"
 	reset := "\033[0m"
-	banner := `
+	banner := fmt.Sprintf(`
 ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                                                               ║
 ║  ██╗   ██╗██████╗  ██████╗ ██████╗  █████╗ ██████╗ ███████╗    ██████╗ ███████╗ ██████╗ ██╗   ██╗██╗██████╗ ███████╗██████╗   ║
@@ -50,11 +50,11 @@ func PrintUpgradeRequiredBanner() {
 ║                                                                                                                               ║
 ║                                          🚫 Your Zed version is too old! 🚫                                                   ║
 ║                                                                                                                               ║
-║                                     This feature requires Zed v0.177.0 or newer                                               ║
+║                                     This feature requires Zed v%s or newer                                               ║
 ║                                    Please update Zed or close the existing window                                             ║
 ║                                                                                                                               ║
 ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-`
+`, minVersion)
 	fmt.Printf("\n%s%s%s\n", yellowBold, banner, reset)
 }
 
@@ -238,7 +238,7 @@ func Debugln(message string) {
 
 // Info prints important user-facing messages (always shown)
 func Info(format string, args ...interface{}) {
-	fmt.Printf("ℹ️  "+format, args...)
+	fmt.Printf("ℹ️ "+format, args...)
 }
 
 // Infoln prints important user-facing messages with newline (always shown)
