@@ -1,4 +1,4 @@
-$BaseGitHubRequest = "https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/refs/heads/add-mutliple-instance-feature/scripts"
+$BaseGitHubRequest = "https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/refs/heads/main/scripts"
 $TempInstallerPath = Join-Path $env:TEMP "CLI-only-installer-$(Get-Random)"
 
 $isDebugging = $false
