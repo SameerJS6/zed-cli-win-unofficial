@@ -270,32 +270,28 @@ try {
 
   # Success summary
   Write-Success "Installation completed successfully!"
-  Send-AnalyticsEvent -EventType "zed_with_cli_installation_completed"
   Write-Info "Installed components:"
+  
   if ($zedExePath) {
     Write-Success "Zed Editor: $zedExePath"
   }
   if ($cliExePath) {
     Write-Success "CLI Launcher: $cliExePath"
   }
+  
+  # Send analytics based on what was actually installed
+  if ($zedExePath -and $cliExePath) {
+    Send-AnalyticsEvent -EventType "zed_with_cli_installation_completed"
+  }
+  elseif ($zedExePath) {
+    Send-AnalyticsEvent -EventType "zed_with_cli_installation_but_only_zed_completed"
+  }
+  elseif ($cliExePath) {
+    Send-AnalyticsEvent -EventType "zed_with_cli_installation_but_only_cli_completed"
+  }
+
+  
   Write-Warning "You may need to restart your terminal to use the commands"
-  Write-Host "
-╔═══════════════════════════════════════════════════╗
-║                                                   ║
-║  ███████╗███████╗██████╗      ██████╗██╗     ██╗  ║
-║  ╚══███╔╝██╔════╝██╔══██╗    ██╔════╝██║     ██║  ║
-║    ███╔╝ █████╗  ██║  ██║    ██║     ██║     ██║  ║
-║   ███╔╝  ██╔══╝  ██║  ██║    ██║     ██║     ██║  ║
-║  ███████╗███████╗██████╔╝    ╚██████╗███████╗██║  ║
-║  ╚══════╝╚══════╝╚═════╝      ╚═════╝╚══════╝╚═╝  ║
-║                                                   ║
-║    🚀 Unofficial Windows CLI for Zed Editor 🚀    ║
-║                                                   ║
-║                   Version: 1.0.0                  ║
-║            https://zedcli.sameerjs.com            ║
-║                                                   ║
-╚═══════════════════════════════════════════════════╝
-" -ForegroundColor Green
 }
 catch {
   Write-Error "Installation failed: $($_.Exception.Message)"
