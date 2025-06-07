@@ -69,7 +69,6 @@ try {
   if (Add-ToPath $InstallPath) {
     Write-Success "Installation completed successfully!"
     Write-Warning "You may need to restart your terminal to use the commands"
-    Send-AnalyticsEvent -EventType "zed_cli_installation_completed"
 
     $banner = @'
 ╔═══════════════════════════════════════════════════╗
@@ -90,6 +89,7 @@ try {
 '@
 
     Write-Host $banner -ForegroundColor Green
+    Send-AnalyticsEvent -EventType "zed_cli_installation_completed"
   }
   else {
     Send-AnalyticsEvent -EventType "zed_cli_installation_completed_with_path_update_failed"
