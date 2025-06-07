@@ -35,7 +35,7 @@ Write-Info "Starting installation of $repoName..."
 if ((Test-Path $InstallPath) -and -not $Force) {
   Write-Warning "Already installed at: $InstallPath"
   $choice = Read-Host "Continue anyway? (y/n)"
-  if ($choice -notmatch '^y(es)?`$') {
+  if ($choice -notmatch '^y(es)?$') {
     Write-Warning "Installation cancelled"
     exit 0
   }
