@@ -7,14 +7,11 @@
     Custom installation directory for Zed editor (default: %LOCALAPPDATA%\Zed)
 .PARAMETER CliInstallPath
     Custom installation directory for zed-cli-win-unofficial (default: %LOCALAPPDATA%\zed-cli-win-unofficial)
-.PARAMETER Force
-    Force reinstallation even if already installed
 #>
 
 param(
   [string]$ZedInstallPath = "",
-  [string]$CliInstallPath = "",
-  [switch]$Force
+  [string]$CliInstallPath = ""
 )
 
 $Global:ScriptDebugMode = $false
@@ -44,10 +41,11 @@ function Install-ZedEditor {
   Write-Info "[Zed] Starting Zed editor installation..."
 
   # Check if already installed
-  if ((Test-Path $ZedInstallPath) -and -not $Force) {
+  if (Test-Path $ZedInstallPath) {
     $zedExe = Join-Path $ZedInstallPath "zed.exe"
     if (Test-Path $zedExe) {
       Write-Success "[Zed] Zed editor already installed at: $ZedInstallPath"
+      Send-AnalyticsEvent -EventType "combined_zed_existing_installation_found"
       return $zedExe
     }
   }
@@ -72,6 +70,7 @@ function Install-ZedEditor {
   }
   catch {
     Write-Error "[Zed] Zed installation failed: $($_.Exception.Message)"
+    Send-AnalyticsEvent -EventType "combined_zed_installation_failed"
     throw
   }
   finally {
@@ -87,11 +86,12 @@ function Install-ZedCli {
   Write-Info "[CLI] Starting zed-cli-win-unofficial installation..."
 
   # Check if already installed
-  if ((Test-Path $CliInstallPath) -and -not $Force) {
+  if (Test-Path $CliInstallPath) {
     $cliExe = Join-Path $CliInstallPath "$cliRepoName.exe"
     Write-Debug "[Debug] Existing CLI exe path = '$cliExe'"
     if (Test-Path $cliExe) {
       Write-Success "[CLI] CLI already installed at: $CliInstallPath"
+      Send-AnalyticsEvent -EventType "combined_cli_existing_installation_found"
       return $cliExe
     }
   }
@@ -133,6 +133,7 @@ function Install-ZedCli {
   }
   catch {
     Write-Error "[CLI] CLI installation failed: $($_.Exception.Message)"
+    Send-AnalyticsEvent -EventType "combined_cli_installation_failed"
     throw
   }
   finally {
@@ -211,6 +212,7 @@ function Set-ZedCli {
 
 # Main Installation Process
 Write-Info "Starting combined Zed + CLI installation..."
+Send-AnalyticsEvent -EventType "combined_installation_started"
 
 $zedExePath = $null
 $cliExePath = $null
@@ -233,6 +235,7 @@ try {
       if (Test-Path $path) {
         $zedExePath = $path
         Write-Success "[Zed] Found existing Zed installation: $zedExePath"
+        Send-AnalyticsEvent -EventType "combined_zed_fallback_installation_found"
         break
       }
     }
@@ -254,9 +257,11 @@ try {
       $configSuccess = Set-ZedCli -ZedExePath $zedExePath -CliExePath $cliExePath
       if ($configSuccess) {
         Write-Success "[CLI] Configuration completed"
+        Send-AnalyticsEvent -EventType "combined_cli_configuration_succeeded"
       }
       else {
         Write-Warning "[CLI] Configuration failed - manual setup may be required"
+        Send-AnalyticsEvent -EventType "combined_cli_configuration_failed"
       }
     }
     else {
@@ -281,13 +286,13 @@ try {
   
   # Send analytics based on what was actually installed
   if ($zedExePath -and $cliExePath) {
-    Send-AnalyticsEvent -EventType "zed_with_cli_installation_completed"
+    Send-AnalyticsEvent -EventType "combined_installation_completed"
   }
   elseif ($zedExePath) {
-    Send-AnalyticsEvent -EventType "zed_with_cli_installation_but_only_zed_completed"
+    Send-AnalyticsEvent -EventType "combined_installation_only_zed_completed"
   }
   elseif ($cliExePath) {
-    Send-AnalyticsEvent -EventType "zed_with_cli_installation_but_only_cli_completed"
+    Send-AnalyticsEvent -EventType "combined_installation_only_cli_completed"
   }
 
   
@@ -295,7 +300,7 @@ try {
 }
 catch {
   Write-Error "Installation failed: $($_.Exception.Message)"
-  Send-AnalyticsEvent -EventType "zed_with_cli_installation_failed"
+  Send-AnalyticsEvent -EventType "combined_installation_failed"
   exit 1
 }
 
