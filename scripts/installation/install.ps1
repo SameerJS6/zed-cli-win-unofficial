@@ -69,14 +69,18 @@ try {
   if (Add-ToPath $InstallPath) {
     Write-Success "Installation completed successfully!"
     Write-Warning "You may need to restart your terminal to use the commands"
+    Send-AnalyticsEvent -EventType "zed_cli_installation_completed"
+
   }
   else {
+    Send-AnalyticsEvent -EventType "zed_cli_installation_completed_with_path_update_failed"
     Write-Warning "Installation completed but PATH update failed"
     Write-Warning "Manual PATH setup required: $InstallPath"
   }
 }
 catch {
   Write-Error "Installation failed: $($_.Exception.Message)"
+  Send-AnalyticsEvent -EventType "zed_cli_installation_failed"
   exit 1
 }
 finally {
@@ -85,5 +89,3 @@ finally {
     Remove-Item $tempDir -Recurse -Force -ErrorAction SilentlyContinue
   }
 }
-
-Write-Success "Installation complete!"

@@ -52,6 +52,7 @@ func Execute(ctx context.Context) error {
 				utils.PrintZedNotFoundBanner("")
 				utils.Error(fmt.Sprintf("Configured Zed path does not exist: %s", cfg.ZedPath))
 				utils.Infoln("👉 Tip: Run `zed config set <path>` to update the path.")
+
 				return nil
 			}
 

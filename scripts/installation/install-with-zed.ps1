@@ -17,7 +17,7 @@ param(
   [switch]$Force
 )
 
-$Global:ScriptDebugMode = $true
+$Global:ScriptDebugMode = $false
 
 # Import all helper functions
 . "./utils.ps1"
@@ -34,7 +34,7 @@ $cliApiUrl = "https://api.github.com/repos/$cliRepoOwner/$cliRepoName/releases/l
 
 # Set default install paths if not provided
 if (-not $ZedInstallPath) {
-  $ZedInstallPath = Join-Path $env:LOCALAPPDATA "Programs\ZedTesting"
+  $ZedInstallPath = Join-Path $env:LOCALAPPDATA "Programs\ZedTesting" # TODO: Change the end path to `Zed` from `ZedTesting`
 }
 if (-not $CliInstallPath) {
   $CliInstallPath = Join-Path $env:LOCALAPPDATA $cliRepoName
@@ -183,7 +183,7 @@ function Set-ZedCli {
         $configResult = & "$cliExeName" "config" "set" "$ZedExePath" 2>&1
         if ($LASTEXITCODE -eq 0) {
           $configSuccess = $true
-          Write-Success "[CLI] Configuration successful using PATH"
+          Write-Debug "[CLI] Configuration successful using PATH"
         }
       }
       catch {
@@ -192,7 +192,7 @@ function Set-ZedCli {
     }
     
     if ($configSuccess) {
-      Write-Success "[CLI] CLI successfully configured with Zed path"
+      Write-Debug "[CLI] CLI successfully configured with Zed path"
       return $true
     }
     else {
@@ -270,6 +270,7 @@ try {
 
   # Success summary
   Write-Success "Installation completed successfully!"
+  Send-AnalyticsEvent -EventType "zed_with_cli_installation_completed"
   Write-Info "Installed components:"
   if ($zedExePath) {
     Write-Success "Zed Editor: $zedExePath"
@@ -278,9 +279,27 @@ try {
     Write-Success "CLI Launcher: $cliExePath"
   }
   Write-Warning "You may need to restart your terminal to use the commands"
+  Write-Host "
+╔═══════════════════════════════════════════════════╗
+║                                                   ║
+║  ███████╗███████╗██████╗      ██████╗██╗     ██╗  ║
+║  ╚══███╔╝██╔════╝██╔══██╗    ██╔════╝██║     ██║  ║
+║    ███╔╝ █████╗  ██║  ██║    ██║     ██║     ██║  ║
+║   ███╔╝  ██╔══╝  ██║  ██║    ██║     ██║     ██║  ║
+║  ███████╗███████╗██████╔╝    ╚██████╗███████╗██║  ║
+║  ╚══════╝╚══════╝╚═════╝      ╚═════╝╚══════╝╚═╝  ║
+║                                                   ║
+║    🚀 Unofficial Windows CLI for Zed Editor 🚀    ║
+║                                                   ║
+║                   Version: 1.0.0                  ║
+║            https://zedcli.sameerjs.com            ║
+║                                                   ║
+╚═══════════════════════════════════════════════════╝
+" -ForegroundColor Green
 }
 catch {
   Write-Error "Installation failed: $($_.Exception.Message)"
+  Send-AnalyticsEvent -EventType "zed_with_cli_installation_failed"
   exit 1
 }
 

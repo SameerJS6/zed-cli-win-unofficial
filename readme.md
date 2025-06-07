@@ -2,7 +2,8 @@
 
 This project is an unofficial Windows CLI for Zed (built from source). It provides all basic features:
 
-- Launching Zed (`zed`),
+- Launching Zed (`zed`)
+- Launching & Managing mulitple instance of zed
 - Opening directories or projects with `zed <path>`
 - Adding an 'Open with Zed' context menu integration.
 
@@ -11,7 +12,7 @@ This project is an unofficial Windows CLI for Zed (built from source). It provid
 - [Usage](#usage)
 - [Features & Behavior](#features--behavior)
   - [Auto-Directory Creation](#auto-directory-creation)
-  - [Single Instance Limitation](#single-instance-limitation)
+  - [Single Instance Limitation (Zed versions below v0.177.0)](#single-instance-limitation-zed-versions-below-v01770)
 - [Installation](#installation)
   - [Native Installation Scripts](#native-installation-scripts)
   - [Scoop](#scoop)
@@ -52,18 +53,22 @@ In this example, if `monkeypress` doesn't exist but `D:\projects\` does, the CLI
 
 ![A terminal-like window with a dark background shows a command and its output. The command entered is `zed D:\projects\monkeypress`. Below it are three lines of output](./public/auto-directory.png)
 
-### Single Instance Limitation
+### Single Instance Limitation (Zed versions below v0.177.0)
 
-**Important:** This CLI cannot launch multiple Zed instances when one is already running. This limitation exists because:
+**Important:** This CLI cannot open multiple Zed windows if Zed is already running — but only when using Zed versions below `v0.177.0`. This limitation exists because:
 
-- The CLI is not first-party (unofficial)
-- No access to Zed's internal IPC (Inter-Process Communication) system
-- IPC typically handles multi-instance management in editors
+- The CLI is unofficial and not integrated with Zed’s internal systems
+- It does not have access to Zed’s IPC (Inter-Process Communication), which handles multi-instance support in official workflows
 
-When attempting to open a project while Zed is already running, the CLI will notify you of this limitation.
+If you're using an older version and attempt to open a new project while Zed is running, the CLI will notify you about this limitation.
+
+> [!NOTE]
+> This limitation does not apply to Zed versions v0.177.0 and above.
+
+#### For Zed version under 0.177.0
 
 ![
-A pop-up window with a dark background displays two lines of text. The first line has a red 'X' icon followed by "Zed is already running in another instance!!". The second line has a yellow triangle icon followed by "This CLI cannot launch a second instance due to Zed's limitation". The words "in" and "limitation" are highlighted in green. The overall design features a subtle geometric grid pattern in the background.](./public/mutliple-instance-running.png)
+A retro-style terminal graphic displays a large “UPGRADE REQUIRED” message in blocky, pixelated text. Below it, a red warning icon is shown with the message: “Your Zed version is too old! This feature requires Zed v0.177.0 or newer. Please update Zed or close the existing window.” At the bottom, a boxed section shows the current version (v0.176.0.3), a warning about the required version, and two lightbulb-marked solutions.](./public/upgrade-required.png)
 
 ## Installation
 

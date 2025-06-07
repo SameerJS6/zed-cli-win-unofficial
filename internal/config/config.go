@@ -65,5 +65,6 @@ func LoadConfig() (*Config, error) {
 	if err := json.NewDecoder(file).Decode(&config); os.IsNotExist(err) {
 		return nil, fmt.Errorf("unable to read config file: %w", err)
 	}
+
 	return &config, nil
 }
