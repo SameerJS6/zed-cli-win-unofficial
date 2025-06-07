@@ -22,7 +22,6 @@ function Write-Debug {
     [Parameter(Mandatory)]
     [string]$Message
   )
-  Write-Host "[utils.ps1] Inside Write-Debug, Global:ScriptDebugMode is: '$($Global:ScriptDebugMode)'" -ForegroundColor Magenta
   if ($Global:ScriptDebugMode) {
     Write-LogInternal -Message $Message -TypePrefix "[DEBUG]" -Color "Gray"
   }
