@@ -26,8 +26,8 @@ This project is an unofficial Windows CLI for Zed (built from source). It provid
 | Command                 | Description                          | Example                           |
 | ----------------------- | ------------------------------------ | --------------------------------- |
 | `zed`                   | Open Zed with last project           | `zed`                             |
-| `zed <path>`            | Open specific file or directory      | `zed C:\projects\my-app`          |
 | `zed .`                 | Open current directory               | `zed .`                           |
+| `zed <path>`            | Open specific file or directory      | `zed C:\projects\my-app`          |
 | `zed config get`        | Get current Zed executable path      | `zed config get`                  |
 | `zed config set <path>` | Set Zed executable path              | `zed config set "C:\Zed\zed.exe"` |
 | `zed context install`   | Install "Open with Zed" context menu | `zed context install`             |
