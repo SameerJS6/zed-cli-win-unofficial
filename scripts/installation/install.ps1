@@ -35,7 +35,7 @@ Write-Info "Starting installation of $repoName..."
 if ((Test-Path $InstallPath) -and -not $Force) {
   Write-Warning "Already installed at: $InstallPath"
   $choice = Read-Host "Continue anyway? (y/n)"
-  if ($choice -notmatch '^y(es)?$') {
+  if ($choice -notmatch '^y(es)?`$') {
     Write-Warning "Installation cancelled"
     exit 0
   }
@@ -70,7 +70,7 @@ try {
     Write-Success "Installation completed successfully!"
     Write-Warning "You may need to restart your terminal to use the commands"
     Send-AnalyticsEvent -EventType "zed_cli_installation_completed"
-    Write-Host "
+    Write-Host @"
 ╔═══════════════════════════════════════════════════╗
 ║                                                   ║
 ║  ███████╗███████╗██████╗      ██████╗██╗     ██╗  ║
@@ -86,7 +86,7 @@ try {
 ║            https://zedcli.sameerjs.com            ║
 ║                                                   ║
 ╚═══════════════════════════════════════════════════╝
-"
+"@
   }
   else {
     Send-AnalyticsEvent -EventType "zed_cli_installation_completed_with_path_update_failed"
