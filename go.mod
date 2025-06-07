@@ -9,7 +9,4 @@ require (
 	golang.org/x/sys v0.33.0
 )
 
-require (
-	github.com/google/uuid v1.6.0 // indirect
-	golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7 // indirect
-)
+require golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7 // indirect
