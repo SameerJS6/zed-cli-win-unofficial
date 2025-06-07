@@ -17,7 +17,7 @@ param(
   [switch]$Force
 )
 
-$Global:ScriptDebugMode = $true
+$Global:ScriptDebugMode = $false
 
 # Import all helper functions
 . "./utils.ps1"
@@ -183,7 +183,7 @@ function Set-ZedCli {
         $configResult = & "$cliExeName" "config" "set" "$ZedExePath" 2>&1
         if ($LASTEXITCODE -eq 0) {
           $configSuccess = $true
-          Write-Success "[CLI] Configuration successful using PATH"
+          Write-Debug "[CLI] Configuration successful using PATH"
         }
       }
       catch {
@@ -192,7 +192,7 @@ function Set-ZedCli {
     }
     
     if ($configSuccess) {
-      Write-Success "[CLI] CLI successfully configured with Zed path"
+      Write-Debug "[CLI] CLI successfully configured with Zed path"
       return $true
     }
     else {
@@ -279,6 +279,23 @@ try {
     Write-Success "CLI Launcher: $cliExePath"
   }
   Write-Warning "You may need to restart your terminal to use the commands"
+  Write-Host "
+╔═══════════════════════════════════════════════════╗
+║                                                   ║
+║  ███████╗███████╗██████╗      ██████╗██╗     ██╗  ║
+║  ╚══███╔╝██╔════╝██╔══██╗    ██╔════╝██║     ██║  ║
+║    ███╔╝ █████╗  ██║  ██║    ██║     ██║     ██║  ║
+║   ███╔╝  ██╔══╝  ██║  ██║    ██║     ██║     ██║  ║
+║  ███████╗███████╗██████╔╝    ╚██████╗███████╗██║  ║
+║  ╚══════╝╚══════╝╚═════╝      ╚═════╝╚══════╝╚═╝  ║
+║                                                   ║
+║    🚀 Unofficial Windows CLI for Zed Editor 🚀    ║
+║                                                   ║
+║                   Version: 1.0.0                  ║
+║            https://zedcli.sameerjs.com            ║
+║                                                   ║
+╚═══════════════════════════════════════════════════╝
+" -ForegroundColor Green
 }
 catch {
   Write-Error "Installation failed: $($_.Exception.Message)"
