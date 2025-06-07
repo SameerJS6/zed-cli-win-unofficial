@@ -1,7 +1,7 @@
 # Controls whether Write-Debug messages are displayed.
 # Set to $true for verbose debugging output, $false to suppress.
 if (-not (Test-Path Variable:Global:ScriptDebugMode)) {
-  $Global:ScriptDebugMode = $true
+  $Global:ScriptDebugMode = $false
 }
 
 function Write-LogInternal {
@@ -157,7 +157,7 @@ function Install-FromZip {
   $downloadPath = Join-Path $TempDir $fileName
 
   Write-Info "[$Component] Downloading: $fileName"
-  Write-Info "[$Component] From: $DownloadUrl"
+  Write-Debug "[$Component] From: $DownloadUrl"
 
   # Download with progress
   Get-FileFromWeb -URL $DownloadUrl -File $downloadPath
