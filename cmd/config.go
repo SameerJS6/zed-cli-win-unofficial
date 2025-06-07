@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"zed-cli-win-unofficial/internal/config"
-	"zed-cli-win-unofficial/internal/telementry"
 	"zed-cli-win-unofficial/internal/utils"
 
 	"github.com/urfave/cli/v3"
@@ -22,9 +21,6 @@ func configCommand() *cli.Command {
 					path := cmd.Args().First()
 
 					if path == "" {
-						telementry.TrackEvent("no_path_provided_error", map[string]any{
-							"error_type": "no_path_provided",
-						})
 						utils.Error("No path provided.")
 						return nil
 					}
@@ -32,9 +28,6 @@ func configCommand() *cli.Command {
 					resolvedPath, err := config.ValidatePath(path)
 					if err != nil {
 						utils.PrintInvalidPathBanner()
-						telementry.TrackEvent("invalid_path_error", map[string]any{
-							"error_type": "invalid_path",
-						})
 						utils.Error(fmt.Sprintf("Invalid path: %v", err))
 						return nil
 					}
@@ -45,16 +38,12 @@ func configCommand() *cli.Command {
 					}
 
 					if err := config.SaveConfig(cfg); err != nil {
-						telementry.TrackEvent("config_save_error", map[string]any{
-							"error_type": "config_save_error",
-						})
 						utils.Error(fmt.Sprintf("Error saving config: %v", err))
 						return nil
 					}
 
 					utils.Success(fmt.Sprintf("Zed path configured: %s", resolvedPath))
 					utils.Infoln("💡 You may want to run `zed context install` to set up or update context menus.")
-					telementry.TrackEvent("config_save_success", map[string]any{})
 					return nil
 				},
 			},
@@ -75,7 +64,6 @@ func configCommand() *cli.Command {
 						return nil
 					}
 
-					telementry.TrackEvent("config_get_success", map[string]any{})
 					utils.Success(fmt.Sprintf("Zed is configured at: %s", cfg.ZedPath))
 					return nil
 				},

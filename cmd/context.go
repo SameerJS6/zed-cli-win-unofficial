@@ -7,7 +7,6 @@ import (
 	"zed-cli-win-unofficial/internal/config"
 	"zed-cli-win-unofficial/internal/fileext"
 	"zed-cli-win-unofficial/internal/registry"
-	"zed-cli-win-unofficial/internal/telementry"
 	"zed-cli-win-unofficial/internal/utils"
 
 	"github.com/urfave/cli/v3"
@@ -72,7 +71,6 @@ func contextCommand() *cli.Command {
 					}
 
 					utils.PrintContextInstallBanner()
-					telementry.TrackEvent("context_install_success", map[string]any{})
 					utils.Success("Zed context menu and file associations setup complete!")
 					utils.Infoln("💡 Optional: Restart Explorer—rarely necessary for current user changes.")
 					utils.Infoln("🔧 To remove these entries, run: zed context uninstall")
@@ -95,9 +93,6 @@ func contextCommand() *cli.Command {
 
 					if !cfg.ContextMenuEnabled {
 						utils.PrintContextNotInstalledBanner()
-						telementry.TrackEvent("context_uninstall_without_installing", map[string]any{
-							"error_type": "context_uninstall_without_installing",
-						})
 						utils.Infoln("ℹ️ Zed context menu is not installed. Nothing to remove.")
 						return nil
 					}
@@ -118,8 +113,6 @@ func contextCommand() *cli.Command {
 					}
 
 					utils.PrintContextUninstallBanner()
-					telementry.TrackEvent("context_uninstall_success", map[string]any{})
-
 					utils.Success("Zed context menu and file associations removed successfully.")
 					utils.Infoln("💡 Optional: Restart Explorer—rarely necessary for current user changes.")
 
