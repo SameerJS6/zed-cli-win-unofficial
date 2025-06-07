@@ -358,7 +358,7 @@ function Send-AnalyticsEvent {
     [string]$EventType
   )
 
-  $apiUrl = "http://localhost:3000/api/analytics/event"
+  $apiUrl = "https://zedcli.sameerjs.com/api/analytics"
 
   # Generate anonymous user ID
   $machineId = "$env:COMPUTERNAME-$env:USERNAME"
