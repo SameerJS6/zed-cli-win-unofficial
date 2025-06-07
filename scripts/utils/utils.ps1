@@ -370,16 +370,20 @@ function Send-AnalyticsEvent {
   $sessionId = [System.Guid]::NewGuid().ToString()
 
   $analyticsData = @{
-    event      = $EventType
+    event      = "zed_win_cli_$EventType"
     properties = @{
-      os             = "windows"
-      os_version     = (Get-CimInstance Win32_OperatingSystem).Caption
-      arch           = $env:PROCESSOR_ARCHITECTURE
-      session_id     = $sessionId
-      user_id        = $anonymousUserId.ToLower()
-      timestamp      = $(Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ")
-      cli_version    = "v1.0.0"
-      install_method = "powershell"
+      project            = "zed-cli-win-unofficial"
+      os                 = "windows"
+      os_version         = (Get-CimInstance Win32_OperatingSystem).Caption
+      arch               = $env:PROCESSOR_ARCHITECTURE
+      session_id         = $sessionId
+      user_id            = $anonymousUserId.ToLower()
+      timestamp          = $(Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ")
+      cli_version        = "v1.0.0"
+      install_method     = "powershell"
+      installer_type     = if ($EventType -like "*combined*") { "combined" } elseif ($EventType -like "*cli_only*") { "cli_only" } else { "unknown" }
+      powershell_version = $PSVersionTable.PSVersion.ToString()
+      is_admin           = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
     }
   } | ConvertTo-Json
 
