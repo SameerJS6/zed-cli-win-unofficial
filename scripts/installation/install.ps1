@@ -6,8 +6,6 @@
 .DESCRIPTION
     Downloads the latest release of zed-cli-win-unofficial, extracts it to a safe location,
     and adds it to the user's PATH environment variable.
-.PARAMETER Force
-    Force reinstallation even if already installed
 #>
 
 
