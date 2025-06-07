@@ -34,7 +34,7 @@ $cliApiUrl = "https://api.github.com/repos/$cliRepoOwner/$cliRepoName/releases/l
 
 # Set default install paths if not provided
 if (-not $ZedInstallPath) {
-  $ZedInstallPath = Join-Path $env:LOCALAPPDATA "Programs\ZedTesting"
+  $ZedInstallPath = Join-Path $env:LOCALAPPDATA "Programs\ZedTesting" # TODO: Change the end path to `Zed` from `ZedTesting`
 }
 if (-not $CliInstallPath) {
   $CliInstallPath = Join-Path $env:LOCALAPPDATA $cliRepoName
@@ -270,6 +270,7 @@ try {
 
   # Success summary
   Write-Success "Installation completed successfully!"
+  Send-AnalyticsEvent -EventType "zed_with_cli_installation_completed"
   Write-Info "Installed components:"
   if ($zedExePath) {
     Write-Success "Zed Editor: $zedExePath"
@@ -281,6 +282,7 @@ try {
 }
 catch {
   Write-Error "Installation failed: $($_.Exception.Message)"
+  Send-AnalyticsEvent -EventType "zed_with_cli_installation_failed"
   exit 1
 }
 
