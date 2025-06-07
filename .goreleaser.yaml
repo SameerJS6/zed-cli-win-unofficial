@@ -71,13 +71,14 @@ scoops:
       name: SameerJS6
       email: sameerjs6@users.noreply.github.com
     commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }} by GoReleaser"
-    homepage: "https://github.com/SameerJS6/zed-cli-win-unofficial"
+    homepage: "https://zedcli.sameerjs.com"
 
     # App description - the usual guideline is to wrap at 80 chars
     description: |
       An unofficial Windows CLI launcher for Zed editor that provides:
 
       * Configurable zed.exe path detection
+      * Launching & Managing mulitple instance of zed
       * Path launching with 'zed .' to open directories
       * Running 'zed' without arguments opens the last project
       * Integration with Windows context menu (Open with Zed)
@@ -88,9 +89,9 @@ scoops:
     license: MIT
     post_install:
       [
-        "Write-Host 'Zed CLI installed successfully!'",
-        "Write-Host 'Usage: zed [path] - opens Zed editor'",
-        "Write-Host 'Example: zed . - opens current directory in Zed'",
+        "Write-Host 'Zed CLI installed successfully!' -ForegroundColor Green",
+        "Write-Host 'Sending a small analytics event to help us understand usage patterns. No personal data is collected — nothing to worry about!' -ForegroundColor Blue",
+        'try { $apiUrl = ''https://zedcli.sameerjs.com/api/analytics''; $eventType = ''scoop_installation_completed''; $machineId = "$env:COMPUTERNAME-$env:USERNAME"; $hasher = [System.Security.Cryptography.MD5]::Create(); $hashBytes = $hasher.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($machineId)); $anonymousUserId = [System.BitConverter]::ToString($hashBytes).Replace(''-'', '''').Substring(0, 16); $sessionId = [System.Guid]::NewGuid().ToString(); $analyticsData = @{ event = "zed_win_cli_$eventType"; properties = @{ project = ''zed-cli-win-unofficial''; os = ''windows''; os_version = (Get-CimInstance Win32_OperatingSystem).Caption; arch = $env:PROCESSOR_ARCHITECTURE; session_id = $sessionId; user_id = $anonymousUserId.ToLower(); timestamp = $(Get-Date -Format ''yyyy-MM-ddTHH:mm:ssZ''); cli_version = ''v1.0.0''; install_method = ''scoop''; installer_type = ''scoop''; powershell_version = $PSVersionTable.PSVersion.ToString(); is_admin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] ''Administrator'') } } | ConvertTo-Json; $job = Start-Job -ScriptBlock { param($url, $data); try { Invoke-RestMethod -Uri $url -Method Post -Body $data -ContentType ''application/json'' -TimeoutSec 3 -ErrorAction SilentlyContinue } catch { } } -ArgumentList $apiUrl, $analyticsData; Register-ObjectEvent -InputObject $job -EventName StateChanged -Action { if ($Event.Sender.State -eq ''Completed'' -or $Event.Sender.State -eq ''Failed'') { Remove-Job $Event.Sender -Force -ErrorAction SilentlyContinue; Unregister-Event $Event.SourceIdentifier -ErrorAction SilentlyContinue } } | Out-Null } catch { }',
       ]
 
     repository:
@@ -106,9 +107,9 @@ chocolateys:
     title: Zed CLI for Windows (Unofficial)
     authors: SameerJS6
     package_source_url: https://github.com/SameerJS6/zed-cli-win-unofficial
-    project_url: https://github.com/SameerJS6/zed-cli-win-unofficial
+    project_url: https://zedcli.sameerjs.com
     url_template: "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-    icon_url: https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/main/public/icon.png
+    icon_url: https://mcp4lhyypl.ufs.sh/f/9Vzc0FiUzX7RKBAXfat0u6dW8rnOt3KwNAkUjzbfxlyYqShF
     copyright: 2024 SameerJS6
     license_url: https://github.com/SameerJS6/zed-cli-win-unofficial/blob/main/LICENSE
     require_license_acceptance: false
@@ -121,8 +122,9 @@ chocolateys:
       An unofficial Windows CLI launcher for Zed editor that provides:
 
       * Configurable zed.exe path
-      * Path launching with 'zed .'
-      * Just running 'zed' opens last project
+      * Launching & Managing mulitple instance of zed
+      * Path launching with 'zed .' to open directories
+      * Running 'zed' without arguments opens the last project
       * Integration with Windows context menu (Open with Zed)
       * Environment variable parsing for installation paths
 
