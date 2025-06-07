@@ -65,8 +65,6 @@ If you're using an older version and attempt to open a new project while Zed is 
 > [!NOTE]
 > This limitation does not apply to Zed versions v0.177.0 and above.
 
-#### For Zed version under 0.177.0
-
 ![
 A retro-style terminal graphic displays a large “UPGRADE REQUIRED” message in blocky, pixelated text. Below it, a red warning icon is shown with the message: “Your Zed version is too old! This feature requires Zed v0.177.0 or newer. Please update Zed or close the existing window.” At the bottom, a boxed section shows the current version (v0.176.0.3), a warning about the required version, and two lightbulb-marked solutions.](./public/upgrade-required.png)
 
