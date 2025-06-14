@@ -31,7 +31,7 @@ $cliApiUrl = "https://api.github.com/repos/$cliRepoOwner/$cliRepoName/releases/l
 
 # Set default install paths if not provided
 if (-not $ZedInstallPath) {
-  $ZedInstallPath = Join-Path $env:LOCALAPPDATA "Programs\ZedTesting" # TODO: Change the end path to `Zed` from `ZedTesting`
+  $ZedInstallPath = Join-Path $env:LOCALAPPDATA "Programs\Zed"
 }
 if (-not $CliInstallPath) {
   $CliInstallPath = Join-Path $env:LOCALAPPDATA $cliRepoName
@@ -50,7 +50,7 @@ function Install-ZedEditor {
     }
   }
 
- 
+
   $tempDir = New-TempDirectory -Prefix "zed-install"
 
   try {

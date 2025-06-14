@@ -26,12 +26,12 @@ jobs:
       - name: Verify Chocolatey Installation
         run: choco --version
 
-      - name: Run GoReleaser (without scoop publishing)
+      - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --skip=chocolatey
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
