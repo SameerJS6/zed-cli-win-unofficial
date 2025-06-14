@@ -12,8 +12,6 @@ before:
   hooks:
     # You may remove this if you don't use go modules.
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
 
 project_name: zed-cli-win-unofficial
 builds:
@@ -91,7 +89,7 @@ scoops:
       [
         "Write-Host 'Zed CLI installed successfully!' -ForegroundColor Green",
         "Write-Host 'Sending a small analytics event to help us understand usage patterns. No personal data is collected — nothing to worry about!' -ForegroundColor Blue",
-        'try { $apiUrl = ''https://zedcli.sameerjs.com/api/analytics''; $eventType = ''scoop_installation_completed''; $machineId = "$env:COMPUTERNAME-$env:USERNAME"; $hasher = [System.Security.Cryptography.MD5]::Create(); $hashBytes = $hasher.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($machineId)); $anonymousUserId = [System.BitConverter]::ToString($hashBytes).Replace(''-'', '''').Substring(0, 16); $sessionId = [System.Guid]::NewGuid().ToString(); $analyticsData = @{ event = "zed_win_cli_$eventType"; properties = @{ project = ''zed-cli-win-unofficial''; os = ''windows''; os_version = (Get-CimInstance Win32_OperatingSystem).Caption; arch = $env:PROCESSOR_ARCHITECTURE; session_id = $sessionId; user_id = $anonymousUserId.ToLower(); timestamp = $(Get-Date -Format ''yyyy-MM-ddTHH:mm:ssZ''); cli_version = ''v1.0.0''; install_method = ''scoop''; installer_type = ''scoop''; powershell_version = $PSVersionTable.PSVersion.ToString(); is_admin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] ''Administrator'') } } | ConvertTo-Json; $job = Start-Job -ScriptBlock { param($url, $data); try { Invoke-RestMethod -Uri $url -Method Post -Body $data -ContentType ''application/json'' -TimeoutSec 3 -ErrorAction SilentlyContinue } catch { } } -ArgumentList $apiUrl, $analyticsData; Register-ObjectEvent -InputObject $job -EventName StateChanged -Action { if ($Event.Sender.State -eq ''Completed'' -or $Event.Sender.State -eq ''Failed'') { Remove-Job $Event.Sender -Force -ErrorAction SilentlyContinue; Unregister-Event $Event.SourceIdentifier -ErrorAction SilentlyContinue } } | Out-Null } catch { }',
+        'try { $apiUrl = ''https://zedcli.sameerjs.com/api/analytics''; $eventType = ''scoop_installation_completed''; $machineId = "$env:COMPUTERNAME-$env:USERNAME"; $hasher = [System.Security.Cryptography.MD5]::Create(); $hashBytes = $hasher.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($machineId)); $anonymousUserId = [System.BitConverter]::ToString($hashBytes).Replace(''-'', '''').Substring(0, 16); $sessionId = [System.Guid]::NewGuid().ToString(); $analyticsData = @{ event = "zed_win_cli_$eventType"; properties = @{ project = ''zed-cli-win-unofficial''; os = ''windows''; os_version = (Get-CimInstance Win32_OperatingSystem).Caption; arch = $env:PROCESSOR_ARCHITECTURE; session_id = $sessionId; user_id = $anonymousUserId.ToLower(); timestamp = $(Get-Date -Format ''yyyy-MM-ddTHH:mm:ssZ''); cli_version = ''v1.0.0''; install_method = ''scoop''; installer_type = ''scoop_cli_only''; powershell_version = $PSVersionTable.PSVersion.ToString(); is_admin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] ''Administrator'') } } | ConvertTo-Json; $job = Start-Job -ScriptBlock { param($url, $data); try { Invoke-RestMethod -Uri $url -Method Post -Body $data -ContentType ''application/json'' -TimeoutSec 3 -ErrorAction SilentlyContinue } catch { } } -ArgumentList $apiUrl, $analyticsData; Register-ObjectEvent -InputObject $job -EventName StateChanged -Action { if ($Event.Sender.State -eq ''Completed'' -or $Event.Sender.State -eq ''Failed'') { Remove-Job $Event.Sender -Force -ErrorAction SilentlyContinue; Unregister-Event $Event.SourceIdentifier -ErrorAction SilentlyContinue } } | Out-Null } catch { }',
       ]
 
     repository:
@@ -132,4 +130,4 @@ chocolateys:
     release_notes: "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/tag/v{{ .Version }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     source_repo: "https://push.chocolatey.org/"
-    skip_publish: true
+    skip_publish: false
