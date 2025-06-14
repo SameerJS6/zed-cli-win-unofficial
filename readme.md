@@ -139,13 +139,13 @@ Download and install manually from the GitHub releases page:
 
 1. Visit the [Releases page](https://github.com/SameerJS6/zed-cli-win-unofficial/releases).
 2. Download the `windows-x86_64.zip` asset.
-3. Extract to a folder of your choosing (default: `%LOCALAPPDATA%\\zed-cli-win-unofficial`).
+3. Extract to a folder of your choosing (default: `%LOCALAPPDATA%\zed-cli-win-unofficial`).
 4. Update your user `PATH` to include that folder (choose one method below):
 
 <details><summary>PowerShell (CLI)</summary>
 
 ```powershell
-$path = "$env:LOCALAPPDATA\\zed-cli-win-unofficial"
+$path = "$env:LOCALAPPDATA\zed-cli-win-unofficial"
 [Environment]::SetEnvironmentVariable('PATH', $env:PATH + ';' + $path, 'User')
 ```
 
@@ -154,10 +154,10 @@ $path = "$env:LOCALAPPDATA\\zed-cli-win-unofficial"
 <details><summary>GUI</summary>
 
 - Press Win, type "Environment Variables", and open "Edit user environment variables".
+- Go `Advanced` tab and click on `Environment Variables`, now a pop up will appear.
 - Under "User variables", select "Path" → click "Edit" → click "New".
-- Paste `%LOCALAPPDATA%\\zed-cli-win-unofficial` and click "OK" on all dialogs.
+- Paste `%LOCALAPPDATA%\zed-cli-win-unofficial` and click "OK" on all dialogs.
 
-> [!TIP]
 > If you have PowerToys installed, you can use the PowerToys _Environment Variables_ tool to manage your variables more easily.
 
 </details>
