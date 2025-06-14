@@ -118,10 +118,19 @@ irm https://raw.githubusercontent.com/SameerJS6/zed-cli-win-unofficial/refs/head
 
 Install using [Scoop](https://scoop.sh/) for easy updates and management:
 
+#### 1. Add the bucket
+
 ```powershell
 scoop bucket add zed-cli-unofficial https://github.com/SameerJS6/zed-cli-win-unofficial
+```
+
+#### 2. Install the CLI
+
+```powershell
 scoop install zed-cli-unofficial/zed-cli-win-unofficial
 ```
+
+✅ That’s it! You can now launch and use zed from any terminal window.
 
 > [!TIP]
 > If you don't have **Scoop** installed, run the following commands in **PowerShell** to install it:
