@@ -4,7 +4,7 @@
         "64bit": {
             "url": "https://github.com/SameerJS6/zed-cli-win-unofficial/releases/download/v1.0.0/zed-cli-win-unofficial_v1.0.0x86_64.zip",
             "bin": [
-                "zed-cli-win-unofficial/zed-cli-win-unofficial.exe"
+                "zed-cli-win-unofficial/zed-cli-win-unofficial.exe", "zed-cli-win-unofficial/zed.bat"
             ],
             "hash": "42a75bd61131e0de0cbbb24c0f899e7a906683e9a9c78bbdd6c171a90dfdad5e"
         }
