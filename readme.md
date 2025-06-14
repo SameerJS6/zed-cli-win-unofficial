@@ -7,6 +7,8 @@ This project is an unofficial Windows CLI for Zed (built from source). It provid
 - Opening directories or projects with `zed <path>`
 - Adding an 'Open with Zed' context menu integration.
 
+![Zed CLI for Windows (Unofficial) – Launch, manage, and integrate Zed editor from your terminal on Windows](./public/main-image.png)
+
 ## Table of Content
 
 - [Usage](#usage)
